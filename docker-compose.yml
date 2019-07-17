@@ -15,6 +15,8 @@ services:
       - ./:/var/www
     networks:
       - app-network
+    links:
+      - db
   webserver:
     image: nginx:alpine
     container_name: webserver
@@ -35,8 +37,11 @@ services:
     tty: true
     ports:
       - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_DATABASE: snapp_hr
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: mysql13243546
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
