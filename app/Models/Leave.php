@@ -39,6 +39,18 @@ class Leave extends Model
     ];
 
     /**
+     * @inheritDoc
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        self::creating(function(Leave $leave){
+            $leave->status = self::STATUS_WAIT_FOR_APPROVE;
+        });
+    }
+
+    /**
      * Get the user that requested this leave.
      *
      * @return BelongsTo

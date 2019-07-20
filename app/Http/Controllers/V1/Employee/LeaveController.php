@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\V1\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LeaveRequest;
 use App\Models\Leave;
 use App\Models\User;
 use App\Repositories\Leaves\LeaveRepositoryInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Resources\Leave as LeaveResource;
 
 class LeaveController extends Controller
 {
@@ -44,49 +46,25 @@ class LeaveController extends Controller
 
         return $this->leaveRepository->getUsersLeaves($user, 10, $page);
     }
-//
-//    /**
-//     * Store a newly created resource in storage.
-//     *
-//     * @param  \Illuminate\Http\Request  $request
-//     * @return \Illuminate\Http\Response
-//     */
-//    public function store(Request $request)
-//    {
-//        //
-//    }
-//
-//    /**
-//     * Display the specified resource.
-//     *
-//     * @param  \App\Models\Leave  $leave
-//     * @return \Illuminate\Http\Response
-//     */
-//    public function show(Leave $leave)
-//    {
-//        //
-//    }
-//
-//    /**
-//     * Update the specified resource in storage.
-//     *
-//     * @param  \Illuminate\Http\Request  $request
-//     * @param  \App\Models\Leave  $leave
-//     * @return \Illuminate\Http\Response
-//     */
-//    public function update(Request $request, Leave $leave)
-//    {
-//        //
-//    }
-//
-//    /**
-//     * Remove the specified resource from storage.
-//     *
-//     * @param  \App\Models\Leave  $leave
-//     * @return \Illuminate\Http\Response
-//     */
-//    public function destroy(Leave $leave)
-//    {
-//        //
-//    }
+
+    /**
+     * Tries to store a leave in database.
+     *
+     * @param LeaveRequest $request
+     * @return LeaveResource
+     * @throws AuthorizationException
+     */
+    public function store(LeaveRequest $request)
+    {
+        $this->authorize('create', Leave::class);
+
+        $leave = new Leave($request->all());
+        $leave->user_id = auth()->user()->id;
+
+        if ($leave->save()) {
+            return LeaveResource::make($leave);
+        } else {
+            return response('Bad request.', 400);
+        }
+    }
 }
