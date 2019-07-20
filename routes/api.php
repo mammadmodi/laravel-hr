@@ -27,4 +27,12 @@ Route::group([
         $router->get('refresh', 'AuthController@refresh');
         $router->get('me', 'AuthController@me');
     });
+
+    $router->group([
+        'prefix' => 'employee',
+        'name' => 'employee.',
+        'namespace' => 'V1\Employee'
+    ], function (Router $router) {
+        $router->resource('leaves', 'LeaveController')->except(['edit', 'create']);
+    });
 });
