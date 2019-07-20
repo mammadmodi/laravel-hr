@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -16,6 +17,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string $email
  * @property integer $department_id
  * @property Department $department
+ * @property Collection $leaves
  */
 class User extends Authenticatable implements JWTSubject
 {
@@ -72,5 +74,10 @@ class User extends Authenticatable implements JWTSubject
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class);
     }
 }
