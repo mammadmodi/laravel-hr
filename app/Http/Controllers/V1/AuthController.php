@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Http\Resources\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 
@@ -40,7 +41,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return response()->json(User::make(auth()->user()));
     }
 
     /**
