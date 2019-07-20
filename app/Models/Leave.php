@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property $start
  * @property $end
  * @property string $status
+ * @property $created_at
+ * @property $updated_at
  * @property User $user
  * @property User $committer
  */

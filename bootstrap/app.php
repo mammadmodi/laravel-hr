@@ -11,6 +11,9 @@
 |
 */
 
+use App\Repositories\Leaves\LeaveRepositoryInterface;
+use App\Repositories\Leaves\SqlLeaveRepository;
+
 $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
@@ -40,6 +43,10 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+
+$app->singleton(LeaveRepositoryInterface::class, function () {
+    return new SqlLeaveRepository();
+});
 
 /*
 |--------------------------------------------------------------------------
