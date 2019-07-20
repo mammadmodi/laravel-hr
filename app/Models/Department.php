@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Class Department
  * @package App\Models
+ * @property int $id
+ * @property string $name
  * @property User[] $users
  */
 class Department extends Model
