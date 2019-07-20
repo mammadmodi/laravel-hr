@@ -48,6 +48,10 @@ class Leave extends Model
         self::creating(function(Leave $leave){
             $leave->status = self::STATUS_WAIT_FOR_APPROVE;
         });
+
+        self::created(function(Leave $leave){
+            //TODO dispatch event to notify manager.
+        });
     }
 
     /**

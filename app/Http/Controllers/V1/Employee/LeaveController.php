@@ -67,4 +67,18 @@ class LeaveController extends Controller
             return response('Bad request.', 400);
         }
     }
+
+    /**
+     * Shows leave of user.
+     *
+     * @param Leave $leaf
+     * @return LeaveResource
+     * @throws AuthorizationException
+     */
+    public function show(Leave $leaf)
+    {
+        $this->authorize('viewOwn', $leaf);
+
+        return LeaveResource::make($leaf);
+    }
 }
