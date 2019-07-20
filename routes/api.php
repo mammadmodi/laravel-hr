@@ -33,6 +33,6 @@ Route::group([
         'name' => 'employee.',
         'namespace' => 'V1\Employee'
     ], function (Router $router) {
-        $router->resource('leaves', 'LeaveController')->except(['edit', 'create']);
+        $router->resource('leaves', 'LeaveController')->only(['index', 'store', 'show']);
     });
 });

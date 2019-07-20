@@ -18,7 +18,6 @@ class PermissionsTableSeeder extends Seeder
             Permission::PERMISSION_VIEW_OWN_LEAVE,
             Permission::PERMISSION_INDEX_OWN_LEAVE,
             Permission::PERMISSION_CREATE_LEAVE,
-            Permission::PERMISSION_UPDATE_OWN_LEAVE,
             Permission::PERMISSION_CANCEL_OWN_LEAVE,
         ];
         foreach ($employeePermissionNames as $permissionName) {
@@ -29,7 +28,6 @@ class PermissionsTableSeeder extends Seeder
         $managerSpecificPermissionNames = [
             Permission::PERMISSION_INDEX_USER_LEAVE,
             Permission::PERMISSION_VIEW_USER_LEAVE,
-            Permission::PERMISSION_UPDATE_USER_LEAVE,
             Permission::PERMISSION_APPROVE_USER_LEAVE,
             Permission::PERMISSION_REJECT_USER_LEAVE,
         ];

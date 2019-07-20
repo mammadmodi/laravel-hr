@@ -47,33 +47,6 @@ class LeavePolicy
     }
 
     /**
-     * Determine whether the user can update another user's leave.
-     *
-     * @param User $manager
-     * @param Leave $leave
-     * @return boolean
-     */
-    public function update(User $manager, Leave $leave)
-    {
-        return $manager->hasPermissionTo(Permission::PERMISSION_UPDATE_USER_LEAVE) &&
-            $manager->id != $leave->user->id &&
-            $manager->department_id == $leave->user->department_id;
-    }
-
-    /**
-     * Determine whether the user can update own leaves.
-     *
-     * @param User $user
-     * @param Leave $leave
-     * @return boolean
-     */
-    public function updateOwn(User $user, Leave $leave)
-    {
-        return $user->hasPermissionTo(Permission::PERMISSION_UPDATE_OWN_LEAVE) &&
-            $leave->user_id == $user->id;
-    }
-
-    /**
      * Determine whether the user can view another user's leave.
      *
      * @param User $manager
