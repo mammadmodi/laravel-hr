@@ -2,8 +2,6 @@
 
 namespace Tests\Unit\Repositories;
 
-use App\Models\Leave;
-use App\Models\User;
 use App\Repositories\Leaves\LeaveRepositoryInterface;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
@@ -12,20 +10,6 @@ use Tests\TestCase;
 class SqlLeaveRepositoryTest extends TestCase
 {
     use DatabaseTransactions;
-
-    /**
-     * Gets an user with number of leaves.
-     *
-     * @param int $leavesNumber
-     * @return User
-     */
-    private function getUserWithLeaves($leavesNumber = 10)
-    {
-        $user = factory(User::class)->create();
-        factory(Leave::class, $leavesNumber)->create(['user_id' => $user->id]);
-
-        return $user;
-    }
 
     /**
      * @test
