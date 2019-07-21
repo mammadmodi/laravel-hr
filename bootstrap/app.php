@@ -14,6 +14,8 @@
 use App\Models\Leave;
 use App\Repositories\Leaves\LeaveRepositoryInterface;
 use App\Repositories\Leaves\SqlLeaveRepository;
+use App\Services\Notify\MqttClient;
+use App\Services\Notify\NotifierInterface;
 use Symfony\Component\Workflow\DefinitionBuilder;
 use Symfony\Component\Workflow\Registry;
 use Symfony\Component\Workflow\SupportStrategy\InstanceOfSupportStrategy;
@@ -68,6 +70,10 @@ $app->singleton(Registry::class, function () use ($app){
     $registry->addWorkflow($leaveWorkFlow, new InstanceOfSupportStrategy(Leave::class));
 
     return $registry;
+});
+
+$app->singleton(NotifierInterface::class,function () {
+    return new MqttClient();
 });
 
 /*
