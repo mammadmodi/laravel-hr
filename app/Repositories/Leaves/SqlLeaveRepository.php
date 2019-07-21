@@ -2,8 +2,8 @@
 
 namespace App\Repositories\Leaves;
 
-use App\Models\Leave;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class SqlLeaveRepository implements LeaveRepositoryInterface
 {
@@ -12,7 +12,7 @@ class SqlLeaveRepository implements LeaveRepositoryInterface
      */
     public function getUsersLeaves(User $user, $perPage = 10, $page = 1)
     {
-        $leaves = Leave::query()
+        $leaves = DB::table('leaves')
             ->where('user_id', '=', $user->id)
             ->orderBy('id', 'DESC')
             ->paginate($perPage, ['*'], 'page', $page)
