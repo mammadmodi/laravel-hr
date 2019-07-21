@@ -3,16 +3,39 @@
 namespace App\Listeners;
 
 use App\Events\Leave\Created;
+use App\Jobs\NotifyJob;
+use App\Repositories\Leaves\LeaveRepositoryInterface;
 use Illuminate\Events\Dispatcher;
 
 class LeaveEventSubscriber
 {
     /**
+     * @var LeaveRepositoryInterface
+     */
+    private $leaveRepository;
+
+    /**
+     * LeaveEventSubscriber constructor.
+     */
+    public function __construct()
+    {
+        $this->leaveRepository = app(LeaveRepositoryInterface::class);
+    }
+
+    /**
      * @param Created $event
      */
     public function leaveCreated(Created $event) {
-        //TODO queue for pushing message
-        $event->getLeave()->save();
+        $leave = $event->getLeave();
+        $user = $leave->user;
+        $leave->save();
+
+        $userManagers = $this->leaveRepository->getDepartmentManagers($user->department);
+        $messageBody = "$user->name has requested a leave from $leave->start to $leave->end";
+
+        foreach ($userManagers as $userManager) {
+            NotifyJob::dispatch($userManager, $messageBody)->onQueue('notification');
+        }
     }
 
     /**
