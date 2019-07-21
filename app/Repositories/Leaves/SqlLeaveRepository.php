@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Leaves;
 
+use App\Models\Department;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -20,5 +22,21 @@ class SqlLeaveRepository implements LeaveRepositoryInterface
         ;
 
         return $leaves;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDepartmentManagers(Department $department)
+    {
+        $managers = User::whereHas(
+            "roles",
+            function($query) {
+                $query->where("name", Role::ROLE_MANAGER);
+            })
+            ->where('department_id', '=', $department->id)
+            ->get();
+
+        return $managers;
     }
 }
