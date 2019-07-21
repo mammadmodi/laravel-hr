@@ -34,6 +34,6 @@ Route::group([
         'namespace' => 'V1\Employee'
     ], function (Router $router) {
         $router->resource('leaves', 'LeaveController')->only(['index', 'store', 'show']);
-        $router->patch('leaves/{leaf}/cancel', 'LeaveController@cancel')->name('cancel');
+        $router->patch('leaves/{leaf}/cancel', 'LeaveController@cancel')->name('leaves.cancel');
     });
 });

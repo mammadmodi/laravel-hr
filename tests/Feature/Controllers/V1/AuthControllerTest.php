@@ -5,33 +5,10 @@ namespace Tests\Feature\Controllers\V1;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthControllerTest extends TestCase
 {
     use DatabaseTransactions;
-
-    /**
-     * Generates a valid token.
-     *
-     * @return string
-     */
-    private function getValidToken()
-    {
-        $user = factory(User::class)->create();
-
-        return JWTAuth::fromUser($user);
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getNotValidToken()
-    {
-        $user = factory(User::class)->make(['name' => 'not_exist_user']);
-
-        return JWTAuth::fromUser($user);
-    }
 
     /**
      * @test

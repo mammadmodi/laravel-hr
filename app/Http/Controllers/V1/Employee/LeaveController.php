@@ -101,7 +101,7 @@ class LeaveController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-        if ($user->can('viewOwn', $leaf)) {
+        if ($user->can('cancelOwn', $leaf)) {
             $workflow = Leave::getWorkflow($leaf);
 
             if ($workflow->can($leaf, Leave::TRANSITION_CANCEL)) {
