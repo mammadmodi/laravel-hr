@@ -7,7 +7,6 @@ use App\Http\Requests\LeaveRequest;
 use App\Models\Leave;
 use App\Models\User;
 use App\Repositories\Leaves\LeaveRepositoryInterface;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -36,16 +35,18 @@ class LeaveController extends Controller
      *
      * @param Request $request
      * @return Response
-     * @throws AuthorizationException
      */
     public function index(Request $request)
     {
         /** @var User $user */
         $user = auth()->user();
-        $this->authorize('indexOwn', Leave::class);
-        $page = (int)$request->get('page') ?? 1;
+        if ($user->can('indexOwn', Leave::class)) {
+            $page = (int)$request->get('page') ?? 1;
 
-        return $this->leaveRepository->getUsersLeaves($user, 10, $page);
+            return $this->leaveRepository->getUsersLeaves($user, 10, $page);
+        } else {
+            return response(['message' => 'permission denied'], 403);
+        }
     }
 
     /**
@@ -53,19 +54,23 @@ class LeaveController extends Controller
      *
      * @param LeaveRequest $request
      * @return LeaveResource
-     * @throws AuthorizationException
      */
     public function store(LeaveRequest $request)
     {
-        $this->authorize('create', Leave::class);
+        /** @var User $user */
+        $user = auth()->user();
+        if ($user->can('create', Leave::class)) {
 
-        $leave = new Leave($request->all());
-        $leave->user_id = auth()->user()->id;
+            $leave = new Leave($request->all());
+            $leave->user_id = auth()->user()->id;
 
-        if ($leave->save()) {
-            return LeaveResource::make($leave);
+            if ($leave->save()) {
+                return LeaveResource::make($leave);
+            } else {
+                return response('Bad request.', 400);
+            }
         } else {
-            return response('Bad request.', 400);
+            return response(['message' => 'permission denied'], 403);
         }
     }
 
@@ -74,13 +79,16 @@ class LeaveController extends Controller
      *
      * @param Leave $leaf
      * @return LeaveResource
-     * @throws AuthorizationException
      */
     public function show(Leave $leaf)
     {
-        $this->authorize('viewOwn', $leaf);
-
-        return LeaveResource::make($leaf);
+        /** @var User $user */
+        $user = auth()->user();
+        if ($user->can('viewOwn', $leaf)) {
+            return LeaveResource::make($leaf);
+        } else {
+            return response(['message' => 'permission denied'], 403);
+        }
     }
 
     /**
@@ -88,22 +96,26 @@ class LeaveController extends Controller
      *
      * @param Leave $leaf
      * @return ResponseFactory|Response
-     * @throws AuthorizationException
      */
     public function cancel(Leave $leaf)
     {
-        $this->authorize('cancelOwn', $leaf);
-        $workflow = Leave::getWorkflow($leaf);
+        /** @var User $user */
+        $user = auth()->user();
+        if ($user->can('viewOwn', $leaf)) {
+            $workflow = Leave::getWorkflow($leaf);
 
-        if ($workflow->can($leaf, Leave::TRANSITION_CANCEL)) {
-            Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_CANCEL);
-            if ($leaf->save()) {
-                return response(['message' => 'leave successfully canceled.'], 200);
+            if ($workflow->can($leaf, Leave::TRANSITION_CANCEL)) {
+                Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_CANCEL);
+                if ($leaf->save()) {
+                    return response(['message' => 'leave successfully canceled.'], 200);
+                } else {
+                    return response(['message' => 'server error please request later.'], 500);
+                }
             } else {
-                return response(['message' => 'server error please request later.'], 500);
+                return response(['message' => 'leave can not be canceled.'], 400);
             }
         } else {
-            return response(['message' => 'leave can not be canceled.'], 400);
+            return response(['message' => 'permission denied'], 403);
         }
     }
 }
