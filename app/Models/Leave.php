@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\Leave\Created;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Symfony\Component\Workflow\MarkingStore\MethodMarkingStore;
@@ -132,6 +133,12 @@ class Leave extends Model
         self::created(function(Leave $leave){
             self::getWorkflow($leave)
                 ->apply($leave, self::TRANSITION_CREATE);
+            $leave->save();
+
+            $createdEvent = new Created();
+            $createdEvent->setLeave($leave);
+            $createdEvent->setTransition(self::TRANSITION_CREATE);
+            event($createdEvent);
         });
     }
 
