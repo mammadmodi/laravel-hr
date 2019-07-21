@@ -4,6 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Symfony\Component\Workflow\MarkingStore\MethodMarkingStore;
+use Symfony\Component\Workflow\Registry;
+use Symfony\Component\Workflow\Transition;
+use Symfony\Component\Workflow\Workflow;
 
 /**
  * Class Leave
@@ -28,6 +32,11 @@ class Leave extends Model
     const STATUS_REJECTED = 'rejected';
     const STATUS_CANCELED = 'canceled';
 
+    const TRANSITION_CREATE = 'create';
+    const TRANSITION_CANCEL = 'cancel';
+    const TRANSITION_APPROVE = 'approve';
+    const TRANSITION_REJECT = 'reject';
+
     protected $fillable = [
         'start',
         'end'
@@ -39,6 +48,77 @@ class Leave extends Model
     ];
 
     /**
+     * Returns all possible states for state finite machine.
+     *
+     * @return array
+     */
+    public static function getStates()
+    {
+        return [
+            self::STATUS_CREATED,
+            self::STATUS_WAIT_FOR_APPROVE,
+            self::STATUS_APPROVED,
+            self::STATUS_CANCELED,
+            self::STATUS_REJECTED,
+        ];
+    }
+
+    /**
+     * Returns all possible transitions.
+     *
+     * @return Transition[]
+     */
+    public static function getTransitions()
+    {
+        return [
+            new Transition(self::TRANSITION_CREATE, self::STATUS_CREATED, self::STATUS_WAIT_FOR_APPROVE),
+            new Transition(self::TRANSITION_CANCEL, self::STATUS_WAIT_FOR_APPROVE, self::STATUS_CANCELED),
+            new Transition(self::TRANSITION_APPROVE, self::STATUS_WAIT_FOR_APPROVE, self::STATUS_APPROVED),
+            new Transition(self::TRANSITION_REJECT, self::STATUS_WAIT_FOR_APPROVE, self::STATUS_REJECTED),
+        ];
+    }
+
+    /**
+     * Returns marking object used for workflow
+     *
+     * @return MethodMarkingStore
+     */
+    public static function getMarking()
+    {
+        return new MethodMarkingStore(true, 'status');
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus(string $status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Returns related workflow object for a leave.
+     *
+     * @param Leave $leave
+     * @return Workflow
+     */
+    public static function getWorkflow(Leave $leave)
+    {
+        /** @var Registry $registry */
+        $registry = app(Registry::class);
+
+        return $registry->get($leave);
+    }
+
+    /**
      * @inheritDoc
      */
     public static function boot()
@@ -46,11 +126,12 @@ class Leave extends Model
         parent::boot();
 
         self::creating(function(Leave $leave){
-            $leave->status = self::STATUS_WAIT_FOR_APPROVE;
+            $leave->status = self::STATUS_CREATED;
         });
 
         self::created(function(Leave $leave){
-            //TODO dispatch event to notify manager.
+            self::getWorkflow($leave)
+                ->apply($leave, self::TRANSITION_CREATE);
         });
     }
 
