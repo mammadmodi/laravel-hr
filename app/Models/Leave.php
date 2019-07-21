@@ -133,7 +133,6 @@ class Leave extends Model
         self::created(function(Leave $leave){
             self::getWorkflow($leave)
                 ->apply($leave, self::TRANSITION_CREATE);
-            $leave->save();
 
             $createdEvent = new Created();
             $createdEvent->setLeave($leave);

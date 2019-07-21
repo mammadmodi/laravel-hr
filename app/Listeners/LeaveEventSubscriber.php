@@ -12,6 +12,7 @@ class LeaveEventSubscriber
      */
     public function leaveCreated(Created $event) {
         //TODO queue for pushing message
+        $event->getLeave()->save();
     }
 
     /**

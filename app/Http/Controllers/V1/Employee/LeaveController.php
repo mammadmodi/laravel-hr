@@ -8,6 +8,7 @@ use App\Models\Leave;
 use App\Models\User;
 use App\Repositories\Leaves\LeaveRepositoryInterface;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Resources\Leave as LeaveResource;
@@ -80,5 +81,29 @@ class LeaveController extends Controller
         $this->authorize('viewOwn', $leaf);
 
         return LeaveResource::make($leaf);
+    }
+
+    /**
+     * Tries to cancel a leave.
+     *
+     * @param Leave $leaf
+     * @return ResponseFactory|Response
+     * @throws AuthorizationException
+     */
+    public function cancel(Leave $leaf)
+    {
+        $this->authorize('cancelOwn', $leaf);
+        $workflow = Leave::getWorkflow($leaf);
+
+        if ($workflow->can($leaf, Leave::TRANSITION_CANCEL)) {
+            Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_CANCEL);
+            if ($leaf->save()) {
+                return response(['message' => 'leave successfully canceled.'], 200);
+            } else {
+                return response(['message' => 'server error please request later.'], 500);
+            }
+        } else {
+            return response(['message' => 'leave can not be canceled.'], 400);
+        }
     }
 }
