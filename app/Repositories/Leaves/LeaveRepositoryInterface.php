@@ -3,7 +3,6 @@
 namespace App\Repositories\Leaves;
 
 use App\Models\Department;
-use App\Models\Leave;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -15,7 +14,7 @@ interface LeaveRepositoryInterface
      * @param User $user
      * @param int $perPage
      * @param int $page
-     * @return Leave[]
+     * @return Collection
      */
     public function getUsersLeaves(User $user, $perPage = 10, $page = 1);
 

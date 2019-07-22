@@ -51,7 +51,7 @@ class SqlLeaveRepositoryTest extends TestCase
 
         $this->assertEquals(
             $userWithLeaves->leaves->sortByDesc('id')->all(),
-            $this->getSqlLeaveRepository()->getUsersLeaves($userWithLeaves, $perPage, $page)
+            $this->getSqlLeaveRepository()->getUsersLeaves($userWithLeaves, $perPage, $page)->all()
         );
     }
 
@@ -63,7 +63,7 @@ class SqlLeaveRepositoryTest extends TestCase
         $userWithOutLeaves = $this->getUserWithLeaves(0);
         $leaves = $this->getSqlLeaveRepository()->getUsersLeaves($userWithOutLeaves);
 
-        $this->assertEquals(count($leaves), $userWithOutLeaves->leaves->count());
+        $this->assertEquals($leaves->count(), $userWithOutLeaves->leaves->count());
     }
 
     /**

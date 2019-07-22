@@ -5,6 +5,7 @@ namespace App\Repositories\Leaves;
 use App\Models\Department;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class SqlLeaveRepository implements LeaveRepositoryInterface
@@ -20,6 +21,7 @@ class SqlLeaveRepository implements LeaveRepositoryInterface
             ->paginate($perPage, ['*'], 'page', $page)
             ->items()
         ;
+        $leaves = Collection::make($leaves);
 
         return $leaves;
     }

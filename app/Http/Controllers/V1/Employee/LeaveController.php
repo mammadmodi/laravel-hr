@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Repositories\Leaves\LeaveRepositoryInterface;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use App\Http\Resources\Leave as LeaveResource;
 
@@ -34,7 +35,7 @@ class LeaveController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return Response
+     * @return AnonymousResourceCollection|Response
      */
     public function index(Request $request)
     {
@@ -43,7 +44,7 @@ class LeaveController extends Controller
         if ($user->can('indexOwn', Leave::class)) {
             $page = (int)$request->get('page') ?? 1;
 
-            return $this->leaveRepository->getUsersLeaves($user, 10, $page);
+            return LeaveResource::collection($this->leaveRepository->getUsersLeaves($user, 10, $page));
         } else {
             return response(['message' => 'permission denied'], 403);
         }
