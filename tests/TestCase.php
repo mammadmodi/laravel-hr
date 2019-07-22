@@ -53,13 +53,15 @@ abstract class TestCase extends BaseTestCase
      * Creates a new user.
      *
      * @param null $role
+     * @param Department|null $department
      * @return User
      */
-    protected function createUser($role = null)
+    protected function createUser($role = null, Department $department = null)
     {
+        $department = $department ?? factory(Department::class)->create();
         /** @var User $user */
         $user = factory(User::class)->create([
-            'department_id' => factory(Department::class)->create()->id
+            'department_id' => $department->id
         ]);
         if (is_string($role) && Role::findByName($role) != null) {
             $user->assignRole($role);
