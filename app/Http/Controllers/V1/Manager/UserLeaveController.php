@@ -97,4 +97,33 @@ class UserLeaveController extends Controller
             return response(['message' => 'permission denied'], 403);
         }
     }
+
+    /**
+     * Tries to reject a leave.
+     *
+     * @param User $user
+     * @param Leave $leaf
+     * @return ResponseFactory|Response
+     */
+    public function reject(User $user, Leave $leaf)
+    {
+        /** @var User $authenticatedUser */
+        $authenticatedUser = auth()->user();
+        if ($authenticatedUser->can('reject', [$leaf, $user])) {
+            $workflow = Leave::getWorkflow($leaf);
+
+            if ($workflow->can($leaf, Leave::TRANSITION_REJECT)) {
+                Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_REJECT);
+                if ($leaf->save()) {
+                    return response(['message' => 'leave successfully rejected.'], 200);
+                } else {
+                    return response(['message' => 'server error please request later.'], 500);
+                }
+            } else {
+                return response(['message' => 'leave can not be rejected.'], 400);
+            }
+        } else {
+            return response(['message' => 'permission denied'], 403);
+        }
+    }
 }

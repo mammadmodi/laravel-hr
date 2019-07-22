@@ -44,5 +44,6 @@ Route::group([
     ], function (Router $router) {
         $router->resource('users.leaves', 'UserLeaveController')->only(['index', 'show']);
         $router->patch('users/{user}/leaves/{leaf}/approve', 'UserLeaveController@approve')->name('users.leaves.approve');
+        $router->patch('users/{user}/leaves/{leaf}/reject', 'UserLeaveController@reject')->name('users.leaves.reject');
     });
 });
