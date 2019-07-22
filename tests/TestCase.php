@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\Department;
 use App\Models\Leave;
 use App\Models\Role;
 use App\Models\User;
@@ -57,7 +58,9 @@ abstract class TestCase extends BaseTestCase
     protected function createUser($role = null)
     {
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = factory(User::class)->create([
+            'department_id' => factory(Department::class)->create()->id
+        ]);
         if (is_string($role) && Role::findByName($role) != null) {
             $user->assignRole($role);
         }
