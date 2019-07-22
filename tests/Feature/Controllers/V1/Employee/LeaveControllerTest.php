@@ -21,7 +21,7 @@ class LeaveControllerTest extends TestCase
         $userWithLeaves = $this->getUserWithLeaves(1, Role::ROLE_EMPLOYEE);
         $token = $this->makeToken($userWithLeaves);
 
-        $this->get(route('leaves.index', ['page' => 1]), ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
+        $this->get(route('v1.employee.leaves.index', ['page' => 1]), ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
             ->assertStatus(200)
             ->assertJsonCount('1')
         ;
@@ -38,7 +38,7 @@ class LeaveControllerTest extends TestCase
         $otherUserWithLeaves = $this->getUserWithLeaves(1);
         $notOwnedLeave = $otherUserWithLeaves->leaves->first();
 
-        $this->get(route('leaves.show', ['leaf' => $notOwnedLeave->id]), ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
+        $this->get(route('v1.employee.leaves.show', ['leaf' => $notOwnedLeave->id]), ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
             ->assertStatus(403)
             ->assertJsonStructure(['message'])
         ;
@@ -53,7 +53,7 @@ class LeaveControllerTest extends TestCase
         $token = $this->makeToken($userWithLeaves);
         $ownedLeave = $userWithLeaves->leaves->first();
 
-        $this->get(route('leaves.show', ['leaf' => $ownedLeave->id]), ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
+        $this->get(route('v1.employee.leaves.show', ['leaf' => $ownedLeave->id]), ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
             ->assertStatus(200)
             ->assertJsonStructure([
                 'data' => [
@@ -79,7 +79,7 @@ class LeaveControllerTest extends TestCase
             'end' => 'not_valid_data',
         ];
 
-        $this->post(route('leaves.store'), $payload, ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
+        $this->post(route('v1.employee.leaves.store'), $payload, ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
             ->assertStatus(400)
         ;
     }
@@ -96,7 +96,7 @@ class LeaveControllerTest extends TestCase
             'end' => $leave->end,
         ];
 
-        $this->post(route('leaves.store'), $payload, ['Authorization' => 'Bearer ' . $notValidToken, 'Accept' => 'application/json'])
+        $this->post(route('v1.employee.leaves.store'), $payload, ['Authorization' => 'Bearer ' . $notValidToken, 'Accept' => 'application/json'])
             ->assertStatus(401)
         ;
     }
@@ -121,7 +121,7 @@ class LeaveControllerTest extends TestCase
             'end' => $leave->end,
         ];
 
-        $this->post(route('leaves.store'), $payload, ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
+        $this->post(route('v1.employee.leaves.store'), $payload, ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
             ->assertStatus(201)
             ->assertJsonStructure([
                 'data' => [
@@ -145,7 +145,7 @@ class LeaveControllerTest extends TestCase
     {
         $token = $this->getValidToken(Role::ROLE_EMPLOYEE);
 
-        $this->patch(route('leaves.cancel', ['leaf' => 0]), [], ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
+        $this->patch(route('v1.employee.leaves.cancel', ['leaf' => 0]), [], ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
             ->assertStatus(404);
         ;
     }
@@ -160,7 +160,7 @@ class LeaveControllerTest extends TestCase
         $otherUserWithLeaves = $this->getUserWithLeaves(1);
         $notOwnedLeave = $otherUserWithLeaves->leaves->first();
 
-        $this->patch(route('leaves.cancel', ['leaf' => $notOwnedLeave->id]), [], ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
+        $this->patch(route('v1.employee.leaves.cancel', ['leaf' => $notOwnedLeave->id]), [], ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
             ->assertStatus(403)
             ->assertJsonStructure(['message'])
         ;
@@ -177,7 +177,7 @@ class LeaveControllerTest extends TestCase
         $leave->setStatus(Leave::STATUS_REJECTED);
         $leave->save();
 
-        $this->patch(route('leaves.cancel', ['leaf' => $leave->id]), [], ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
+        $this->patch(route('v1.employee.leaves.cancel', ['leaf' => $leave->id]), [], ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
             ->assertStatus(400)
             ->assertJsonStructure(['message'])
         ;
@@ -192,7 +192,7 @@ class LeaveControllerTest extends TestCase
         $token = $this->makeToken($user);
         $leave = $user->leaves->first();
 
-        $this->patch(route('leaves.cancel', ['leaf' => $leave->id]), [], ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
+        $this->patch(route('v1.employee.leaves.cancel', ['leaf' => $leave->id]), [], ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
             ->assertStatus(200)
             ->assertJsonStructure(['message'])
         ;

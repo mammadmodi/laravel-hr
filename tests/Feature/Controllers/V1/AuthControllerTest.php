@@ -15,7 +15,7 @@ class AuthControllerTest extends TestCase
      */
     public function login_with_bad_credentials()
     {
-        $response = $this->post('api/v1/auth/login', ['email' => 'badEmail@gmail.com', 'password' => 'wrong_password']);
+        $response = $this->post(route('v1.auth.login'), ['email' => 'badEmail@gmail.com', 'password' => 'wrong_password']);
 
         $response->assertStatus(401);
         $response->assertJsonStructure(['error']);
@@ -33,7 +33,7 @@ class AuthControllerTest extends TestCase
             'password' => bcrypt($password)
         ]);
 
-        $response = $this->post('api/v1/auth/login', ['email' => $user->email, 'password' => $password]);
+        $response = $this->post(route('v1.auth.login'), ['email' => $user->email, 'password' => $password]);
 
         $response->assertStatus(200);
         $response->assertJsonStructure(['access_token', 'token_type', 'expires_in']);
@@ -45,13 +45,13 @@ class AuthControllerTest extends TestCase
     public function successful_logout()
     {
         $validToken = $this->getValidToken();
-        $this->get('api/v1/auth/logout', ['Authorization' => 'Bearer ' . $validToken, 'Accept' => 'application/json'])
+        $this->get(route('v1.auth.logout'), ['Authorization' => 'Bearer ' . $validToken, 'Accept' => 'application/json'])
             ->assertStatus(200)
             ->assertJsonStructure(['message'])
         ;
         //after successful logout last token should not be work.
         $notValidToken = $validToken;
-        $this->get('api/v1/auth/logout', ['Authorization' => 'Bearer ' . $notValidToken, 'Accept' => 'application/json'])
+        $this->get(route('v1.auth.logout'), ['Authorization' => 'Bearer ' . $notValidToken, 'Accept' => 'application/json'])
             ->assertStatus(401)
             ->assertJsonStructure(['message'])
         ;
@@ -63,7 +63,7 @@ class AuthControllerTest extends TestCase
     public function successful_me()
     {
         $validToken = $this->getValidToken();
-        $this->get('api/v1/auth/me', ['Authorization' => 'Bearer ' . $validToken, 'Accept' => 'application/json'])
+        $this->get(route('v1.auth.me'), ['Authorization' => 'Bearer ' . $validToken, 'Accept' => 'application/json'])
             ->assertStatus(200)
             ->assertJsonStructure(['id', 'name', 'email', 'department'])
         ;
@@ -75,7 +75,7 @@ class AuthControllerTest extends TestCase
     public function not_successful_me()
     {
         $notValidToken = $this->getNotValidToken();
-        $this->get('api/v1/auth/me', ['Authorization' => 'Bearer ' . $notValidToken, 'Accept' => 'application/json'])
+        $this->get(route('v1.auth.me'), ['Authorization' => 'Bearer ' . $notValidToken, 'Accept' => 'application/json'])
             ->assertStatus(401)
             ->assertJsonStructure(['message'])
         ;
@@ -87,7 +87,7 @@ class AuthControllerTest extends TestCase
     public function successful_refresh_token()
     {
         $validToken = $this->getValidToken();
-        $this->get('api/v1/auth/refresh', ['Authorization' => 'Bearer ' . $validToken, 'Accept' => 'application/json'])
+        $this->get(route('v1.auth.refresh'), ['Authorization' => 'Bearer ' . $validToken, 'Accept' => 'application/json'])
             ->assertStatus(200)
             ->assertJsonStructure(['access_token', 'token_type', 'expires_in']);
         ;
@@ -99,7 +99,7 @@ class AuthControllerTest extends TestCase
     public function not_successful_refresh_token()
     {
         $notValidToken = $this->getNotValidToken();
-        $this->get('api/v1/auth/refresh', ['Authorization' => 'Bearer ' . $notValidToken, 'Accept' => 'application/json'])
+        $this->get(route('v1.auth.refresh'), ['Authorization' => 'Bearer ' . $notValidToken, 'Accept' => 'application/json'])
             ->assertStatus(401)
             ->assertJsonStructure(['message']);
         ;
