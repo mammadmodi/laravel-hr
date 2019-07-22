@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     zip \
     vim \
-    curl
+    curl\
+    supervisor
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -17,9 +18,14 @@ RUN useradd -u 1000 -ms /bin/bash -g www www
 
 COPY . /var/www
 
-# Change current user to www
+RUN mkdir -p /var/log/supervisor
+
+COPY docker/supervisor/supervisor.conf /etc/supervisor/supervisord.conf
+
+RUN chown -R  1000:1000 /var/log/supervisor
+RUN chown -R  1000:1000 /var/www/storage/logs
+
 USER www
 
-# Expose port 9000 and start php-fpm server
 EXPOSE 9000
 CMD ["php-fpm"]
