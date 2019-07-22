@@ -95,11 +95,14 @@ class LeavePolicy
      *
      * @param User $manager
      * @param Leave $leave
+     * @param User $employee
      * @return boolean
      */
-    public function reject(User $manager, Leave $leave)
+    public function reject(User $manager, Leave $leave, User $employee)
     {
         return $manager->hasPermissionTo(Permission::PERMISSION_REJECT_USER_LEAVE) &&
+            $employee->id == $leave->user->id &&
+            !$employee->hasAnyRole([Role::ROLE_MANAGER, Role::ROLE_ADMIN]) &&
             $leave->user->department_id == $manager->department_id;
     }
 
@@ -108,11 +111,14 @@ class LeavePolicy
      *
      * @param User $manager
      * @param Leave $leave
+     * @param User $employee
      * @return boolean
      */
-    public function approve(User $manager, Leave $leave)
+    public function approve(User $manager, Leave $leave, User $employee)
     {
         return $manager->hasPermissionTo(Permission::PERMISSION_APPROVE_USER_LEAVE) &&
+            $employee->id == $leave->user->id &&
+            !$employee->hasAnyRole([Role::ROLE_MANAGER, Role::ROLE_ADMIN]) &&
             $leave->user->department_id == $manager->department_id;
     }
 }

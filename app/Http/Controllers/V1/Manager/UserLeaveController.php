@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Leave;
 use App\Models\User;
 use App\Repositories\Leaves\LeaveRepositoryInterface;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -67,32 +68,33 @@ class UserLeaveController extends Controller
             return response(['message' => 'permission denied'], 403);
         }
     }
-//
-//    /**
-//     * Tries to cancel a leave.
-//     *
-//     * @param Leave $leaf
-//     * @return ResponseFactory|Response
-//     */
-//    public function cancel(Leave $leaf)
-//    {
-//        /** @var User $user */
-//        $user = auth()->user();
-//        if ($user->can('cancelOwn', $leaf)) {
-//            $workflow = Leave::getWorkflow($leaf);
-//
-//            if ($workflow->can($leaf, Leave::TRANSITION_CANCEL)) {
-//                Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_CANCEL);
-//                if ($leaf->save()) {
-//                    return response(['message' => 'leave successfully canceled.'], 200);
-//                } else {
-//                    return response(['message' => 'server error please request later.'], 500);
-//                }
-//            } else {
-//                return response(['message' => 'leave can not be canceled.'], 400);
-//            }
-//        } else {
-//            return response(['message' => 'permission denied'], 403);
-//        }
-//    }
+
+    /**
+     * Tries to approve a leave.
+     *
+     * @param User $user
+     * @param Leave $leaf
+     * @return ResponseFactory|Response
+     */
+    public function approve(User $user, Leave $leaf)
+    {
+        /** @var User $authenticatedUser */
+        $authenticatedUser = auth()->user();
+        if ($authenticatedUser->can('approve', [$leaf, $user])) {
+            $workflow = Leave::getWorkflow($leaf);
+
+            if ($workflow->can($leaf, Leave::TRANSITION_APPROVE)) {
+                Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_APPROVE);
+                if ($leaf->save()) {
+                    return response(['message' => 'leave successfully approved.'], 200);
+                } else {
+                    return response(['message' => 'server error please request later.'], 500);
+                }
+            } else {
+                return response(['message' => 'leave can not be approved.'], 400);
+            }
+        } else {
+            return response(['message' => 'permission denied'], 403);
+        }
+    }
 }

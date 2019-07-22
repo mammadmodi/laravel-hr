@@ -43,5 +43,6 @@ Route::group([
         'as' => 'manager.',
     ], function (Router $router) {
         $router->resource('users.leaves', 'UserLeaveController')->only(['index', 'show']);
+        $router->patch('users/{user}/leaves/{leaf}/approve', 'UserLeaveController@approve')->name('users.leaves.approve');
     });
 });
