@@ -45,10 +45,10 @@ class NotifyJob implements ShouldQueue
     /**
      * Sends a notify to user.
      *
-     * @return void
+     * @return boolean
      */
     public function handle()
     {
-        $this->notifier->send($this->user, $this->message);
+        return $this->notifier->send($this->user, $this->message);
     }
 }
