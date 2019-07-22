@@ -42,6 +42,6 @@ Route::group([
         'namespace' => 'Manager',
         'as' => 'manager.',
     ], function (Router $router) {
-        $router->resource('users.leaves', 'UserLeaveController')->only(['index']);
+        $router->resource('users.leaves', 'UserLeaveController')->only(['index', 'show']);
     });
 });

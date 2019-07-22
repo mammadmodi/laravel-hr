@@ -53,13 +53,15 @@ class LeavePolicy
      *
      * @param User $manager
      * @param Leave $leave
+     * @param User $employee
      * @return boolean
      */
-    public function view(User $manager, Leave $leave)
+    public function view(User $manager, Leave $leave, User $employee)
     {
         return $manager->hasPermissionTo(Permission::PERMISSION_VIEW_USER_LEAVE) &&
-            $manager->id != $leave->user->id &&
-            $manager->department_id == $leave->user->department_id;
+            $employee->id == $leave->user->id &&
+            $manager->department_id == $employee->department_id &&
+            !$employee->hasAnyRole([Role::ROLE_MANAGER, Role::ROLE_ADMIN]);
     }
 
     /**

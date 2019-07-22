@@ -48,48 +48,25 @@ class UserLeaveController extends Controller
             return response(['message' => 'permission denied'], 403);
         }
     }
-//
-//    /**
-//     * Tries to store a leave in database.
-//     *
-//     * @param LeaveRequest $request
-//     * @return LeaveResource
-//     */
-//    public function store(LeaveRequest $request)
-//    {
-//        /** @var User $user */
-//        $user = auth()->user();
-//        if ($user->can('create', Leave::class)) {
-//
-//            $leave = new Leave($request->all());
-//            $leave->user_id = auth()->user()->id;
-//
-//            if ($leave->save()) {
-//                return LeaveResource::make($leave);
-//            } else {
-//                return response('Bad request.', 400);
-//            }
-//        } else {
-//            return response(['message' => 'permission denied'], 403);
-//        }
-//    }
-//
-//    /**
-//     * Shows leave of user.
-//     *
-//     * @param Leave $leaf
-//     * @return LeaveResource
-//     */
-//    public function show(Leave $leaf)
-//    {
-//        /** @var User $user */
-//        $user = auth()->user();
-//        if ($user->can('viewOwn', $leaf)) {
-//            return LeaveResource::make($leaf);
-//        } else {
-//            return response(['message' => 'permission denied'], 403);
-//        }
-//    }
+
+
+    /**
+     * Shows leave of user.
+     *
+     * @param User $user
+     * @param Leave $leaf
+     * @return LeaveResource
+     */
+    public function show(User $user, Leave $leaf)
+    {
+        /** @var User $authenticatedUser */
+        $authenticatedUser = auth()->user();
+        if ($authenticatedUser->can('view', [$leaf, $user])) {
+            return LeaveResource::make($leaf);
+        } else {
+            return response(['message' => 'permission denied'], 403);
+        }
+    }
 //
 //    /**
 //     * Tries to cancel a leave.
