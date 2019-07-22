@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Leave;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -32,7 +33,8 @@ class LeavePolicy
     public function index(User $manager, User $employee)
     {
         return $manager->hasPermissionTo(Permission::PERMISSION_INDEX_USER_LEAVE) &&
-            $manager->department_id == $employee->department_id;
+            $manager->department_id == $employee->department_id &&
+            !$employee->hasAnyRole([Role::ROLE_MANAGER, Role::ROLE_ADMIN]);
     }
 
     /**

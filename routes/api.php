@@ -36,4 +36,12 @@ Route::group([
         $router->resource('leaves', 'LeaveController')->only(['index', 'store', 'show']);
         $router->patch('{leaf}/cancel', 'LeaveController@cancel')->name('leaves.cancel');
     });
+
+    $router->group([
+        'prefix' => 'manager',
+        'namespace' => 'Manager',
+        'as' => 'manager.',
+    ], function (Router $router) {
+        $router->resource('users.leaves', 'UserLeaveController')->only(['index']);
+    });
 });
