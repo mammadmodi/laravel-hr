@@ -18,8 +18,8 @@ class CreateLeavesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedInteger('committer_id')->nullable();
-            $table->timestamp('start');
-            $table->timestamp('end');
+            $table->string('start');
+            $table->string('end');
             $table->string('status')->default(Leave::STATUS_WAIT_FOR_APPROVE);
             $table->timestamps();
         });
