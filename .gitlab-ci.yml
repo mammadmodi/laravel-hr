@@ -8,6 +8,8 @@ prepare:
   variables:
     COMPOSER_HOME: '.composer'
     COMPOSER_PROCESS_TIMEOUT: 900
+  before_script:
+    - echo 'extension=fileinfo.so' >> /etc/php/7.2/php.ini
   script:
     - composer install --no-interaction --no-suggest
   cache:
