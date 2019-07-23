@@ -9,7 +9,9 @@ prepare:
     COMPOSER_HOME: '.composer'
     COMPOSER_PROCESS_TIMEOUT: 900
   before_script:
-    - apk add php-dev
+    - apk add php-common
+    - php -m
+    - service php-cli restart
     - php -m
   script:
     - composer install --no-interaction --no-suggest
