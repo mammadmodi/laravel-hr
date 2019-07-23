@@ -8,10 +8,6 @@ prepare:
   variables:
     COMPOSER_HOME: '.composer'
     COMPOSER_PROCESS_TIMEOUT: 900
-  before_script:
-    - mkdir --parents ~/.ssh
-    - echo -e "${GITLAB_CI_INTERNAL_PRIVATE_KEY}" > ~/.ssh/id_rsa
-    - chmod 0600 ~/.ssh/id_rsa
   script:
     - composer install --no-interaction --no-suggest
   cache:
