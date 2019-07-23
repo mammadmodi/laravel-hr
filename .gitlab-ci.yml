@@ -9,7 +9,7 @@ prepare:
     COMPOSER_HOME: '.composer'
     COMPOSER_PROCESS_TIMEOUT: 900
   before_script:
-    - apk add php7.2-dev
+    - apk add php-dev
     - php -m
   script:
     - composer install --no-interaction --no-suggest
