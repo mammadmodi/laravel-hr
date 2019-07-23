@@ -22,7 +22,7 @@ phpunit:
   image: registry.snapp.tech/docker/php:7.2-cli-alpine3.8
   stage: test
   variables:
-    MYSQL_DATABASE: 'db'
+    MYSQL_DATABASE: 'default'
     MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     APP_ENV: 'testing'
     APP_DEBUG: 'true'
