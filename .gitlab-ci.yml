@@ -2,7 +2,7 @@ stages:
   - prepare
 
 prepare:
-  image: registry.snapp.tech/docker/php:7.2-fpm-alpine3.8
+  image: registry.snapp.tech/docker/php:7.2-cli-alpine3.8
   stage: prepare
   variables:
     COMPOSER_HOME: '.composer'
@@ -12,6 +12,7 @@ prepare:
     - echo -e "${GITLAB_CI_INTERNAL_PRIVATE_KEY}" > ~/.ssh/id_rsa
     - chmod 0600 ~/.ssh/id_rsa
   script:
+    - php -m
     - composer install --no-interaction --no-suggest
   cache:
     key: composer
