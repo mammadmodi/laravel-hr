@@ -10,6 +10,7 @@ prepare:
     COMPOSER_PROCESS_TIMEOUT: 900
   before_script:
     - apk add php-common
+    - cat /etc/php/7.2/php.ini
     - php -m
     - service php-cli restart
     - php -m
