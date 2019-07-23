@@ -1,6 +1,47 @@
-before_script:
-  - apt-get install php
+stages:
+  - prepare
 
-run-test:
+prepare:
+  image: registry.snapp.tech/docker/php:7.2-cli-alpine3.8
+  stage: prepare
+  variables:
+    COMPOSER_HOME: '.composer'
+    COMPOSER_PROCESS_TIMEOUT: 900
+  before_script:
+    - mkdir --parents ~/.ssh
+    - echo -e "${GITLAB_CI_INTERNAL_PRIVATE_KEY}" > ~/.ssh/id_rsa
+    - chmod 0600 ~/.ssh/id_rsa
   script:
-    - php --version
+    - composer install --no-interaction --no-suggest
+  cache:
+    key: composer
+    paths:
+      - .composer/
+      - vendor/
+
+#phpunit:
+#  image: registry.snapp.tech/docker/php:7.2-cli-alpine3.8
+#  stage: test
+#  variables:
+#    MYSQL_DATABASE: 'default'
+#    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+#    APP_ENV: 'testing'
+#    APP_DEBUG: 'true'
+#    REDIS_HOST: 'redis-default'
+#    CACHE_DRIVER: 'array'
+#    QUEUE_CONNECTION: 'notification'
+#    PERFORMANCE_LOG_ENABLED: 'false'
+#  services:
+#    - name: redis:4.0.11-alpine
+#      alias: redis-cache-requests
+#  before_script:
+#    - apk add php7-xdebug
+#    - sed -i 's/;zend_extension/zend_extension/g' /etc/php/7.2/conf.d/xdebug.ini
+#  script:
+#    - php -d memory_limit=1G vendor/bin/phpunit --coverage-text --colors=never --stop-on-error
+#  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+#  cache:
+#    key: composer
+#    paths:
+#      - vendor
+#    policy: pull
