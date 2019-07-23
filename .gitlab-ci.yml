@@ -38,8 +38,6 @@ phpunit:
     - apk add php7-xdebug
     - sed -i 's/;zend_extension/zend_extension/g' /etc/php/7.2/conf.d/xdebug.ini
     - php ./artisan migrate --seed
-    - php ./artisan key:generate
-    - php ./artisan jwt:secret
   script:
     - php -d memory_limit=1G vendor/bin/phpunit --coverage-text --colors=never --stop-on-error
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
