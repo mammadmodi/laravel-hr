@@ -4,8 +4,7 @@ WORKDIR /app
 RUN apk update && \
     apk add php7-redis &&\
     apk add wget &&\
-    apk add redis &&\
-    apk add mysql-client
+    apk add redis
 
 RUN wget https://github.com/spiral/roadrunner/releases/download/v1.3.5/roadrunner-1.3.5-linux-amd64.tar.gz\
     && tar -xzvf roadrunner-1.3.5-linux-amd64.tar.gz \

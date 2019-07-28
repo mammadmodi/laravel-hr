@@ -1,0 +1,21 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: hr-temp
+  namespace: modares-test-env
+  labels:
+    app: hr-temp
+spec:
+  replicas: 1
+  selector:
+    app: hr-temp
+  template:
+    metadata:
+      labels:
+        app: hr-temp
+    spec:
+      containers:
+        - name: hr-temp-app
+          image: docker-registry.default.svc:5000/modares-test-env/hr-temp:master
+        - name: hr-temp-redis
+          image: docker-registry.default.svc:5000/openshift/mysql:5.6
