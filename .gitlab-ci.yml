@@ -54,7 +54,7 @@ build:
   image: docker:git
   stage: release
   variables:
-    IMAGE_NAME: "${OKD_REGISTRY}/mammadmodi/hr-temp:$CI_COMMIT_REF_SLUG"
+    IMAGE_NAME: "${OKD_REGISTRY}/mammadmodi/hr-temp:${CI_COMMIT_REF_SLUG}"
   before_script:
     - docker info
     - docker login -u gitlab-ci -p ${OKD_TOKEN} ${OKD_REGISTRY}
