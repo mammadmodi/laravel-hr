@@ -4,7 +4,8 @@ stages:
   - release
 variables:
   OKD_REGISTRY: 'registry.apps.private.teh-1.snappcloud.io'
-
+  OKD_PROJECT_NAME: 'modares-test-env'
+  APP_NAME: 'hr-temp'
 prepare:
   image: registry.snapp.tech/docker/php:7.2-cli-alpine3.8
   stage: prepare
@@ -54,7 +55,7 @@ build:
   image: docker:git
   stage: release
   variables:
-    IMAGE_NAME: "${OKD_REGISTRY}/mammadmodi/hr-temp:${CI_COMMIT_REF_SLUG}"
+    IMAGE_NAME: "${OKD_REGISTRY}/${OKD_PROJECT_NAME}/${APP_NAME}-temp:${CI_COMMIT_REF_SLUG}"
   before_script:
     - docker info
     - docker login -u gitlab-ci -p ${OKD_TOKEN} ${OKD_REGISTRY}
