@@ -58,7 +58,7 @@ build:
     IMAGE_NAME: "${OKD_REGISTRY}/${OKD_PROJECT_NAME}/${APP_NAME}-temp:${CI_COMMIT_REF_SLUG}"
   before_script:
     - docker info
-    - docker login -u gitlab-ci -p ${OKD_TOKEN} ${OKD_REGISTRY}
+    - docker login -p ${OKD_TOKEN} -u unused ${OKD_REGISTRY}
   script:
     - docker build  -t ${IMAGE_NAME} .
   after_script:
