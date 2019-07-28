@@ -1,6 +1,9 @@
 stages:
   - prepare
   - test
+  - release
+variables:
+  OKD_REGISTRY: 'registry.apps.private.teh-1.snappcloud.io'
 
 prepare:
   image: registry.snapp.tech/docker/php:7.2-cli-alpine3.8
@@ -41,6 +44,24 @@ phpunit:
   script:
     - php -d memory_limit=1G vendor/bin/phpunit --coverage-text --colors=never --stop-on-error
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  cache:
+    key: composer
+    paths:
+      - vendor
+    policy: pull
+
+build:
+  image: docker:git
+  stage: release
+  variables:
+    IMAGE_NAME: "${OKD_REGISTRY}/mammadmodi/hr-temp:$CI_COMMIT_REF_SLUG"
+  before_script:
+    - docker info
+    - docker login -u gitlab-ci -p ${OKD_TOKEN} ${OKD_REGISTRY}
+  script:
+    - docker build  -t ${IMAGE_NAME} .
+  after_script:
+    - docker push ${IMAGE_NAME}
   cache:
     key: composer
     paths:
