@@ -55,7 +55,7 @@ build:
   image: docker:git
   stage: release
   variables:
-    IMAGE_NAME: "${OKD_REGISTRY}/${OKD_PROJECT_NAME}/${APP_NAME}-temp:${CI_COMMIT_REF_SLUG}"
+    IMAGE_NAME: "${OKD_REGISTRY}/${OKD_PROJECT_NAME}/${APP_NAME}:${CI_COMMIT_REF_SLUG}"
   before_script:
     - docker info
     - docker login -p ${OKD_TOKEN} -u unused ${OKD_REGISTRY}
