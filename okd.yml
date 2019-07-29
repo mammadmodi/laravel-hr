@@ -20,6 +20,8 @@ spec:
           env:
             - name: DB_HOST
               value: mysql
+            - name: APP_ENV
+              value: local
             - name: DB_PORT
               value: "3306"
             - name: DB_DATABASE
@@ -36,6 +38,6 @@ spec:
               value: WQil6JbQfE7BBVB6
             - name: QUEUE_CONNECTION
               value: notification
-          command: ["php", "artisan", "migrate"]
+          command: ["php", "artisan", "serve", "--port=8091"]
           ports:
             - containerPort: "8090"

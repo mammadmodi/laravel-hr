@@ -7,5 +7,3 @@ RUN apk update && \
 
 RUN php -m
 COPY . /app
-
-CMD "php /app/artisan serve --port 8091"
