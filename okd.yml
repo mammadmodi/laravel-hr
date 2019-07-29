@@ -37,3 +37,5 @@ spec:
             - name: QUEUE_CONNECTION
               value: notification
           command: ["php", "artisan", "migrate"]
+          ports:
+            - containerPort: "8090"
