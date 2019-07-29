@@ -6,4 +6,6 @@ RUN apk update && \
     apk add wget
 
 RUN php -m
+COPY . /app
+
 CMD "php /app/artisan serve --port 8091"
