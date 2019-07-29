@@ -77,4 +77,5 @@ deploy:
   stage: deploy
   script:
     - oc login ${OKD_CLUSTER_ADDRESS} --token=${OKD_TOKEN}
-    - oc aplly -f okd.yml
+    - oc project ${OKD_PROJECT_NAME}
+    - oc apply -f okd.yml
