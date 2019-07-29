@@ -6,4 +6,4 @@ RUN apk update && \
     apk add wget
 
 RUN php -m
-CMD ["php", "artisan", "serve", "--port=8090"]
+CMD ["php", "artisan", "serve", "--port=8091"]
