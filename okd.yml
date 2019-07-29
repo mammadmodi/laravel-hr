@@ -36,3 +36,4 @@ spec:
               value: WQil6JbQfE7BBVB6
             - name: QUEUE_CONNECTION
               value: notification
+          command: ["php", "artisan", "migrate"]
