@@ -2,7 +2,7 @@ FROM registry.snapp.tech/docker/php:7.2-cli-alpine3.8
 
 FROM alpine:latest
 
-RUN apk update && apk add --no-cache supervisor && apk add vim && apk add php7-redis
+RUN apk update && apk add --no-cache supervisor && apk add vim && apk add php7-redis && apk add wget
 
 COPY ./ /app
 
