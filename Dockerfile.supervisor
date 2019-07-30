@@ -1,6 +1,16 @@
 FROM registry.snapp.tech/docker/php:7.2-cli-alpine3.8
 
 FROM alpine:latest
-RUN apk update && apk add --no-cache supervisor
+
+RUN apk update && apk add --no-cache supervisor && apk add vim && apk add php7-redis
+
+COPY ./ /app
+
+RUN mkdir -p /var/log/supervisor
+
+RUN chown -R  1000:1000 /var/log/supervisor
+RUN chown -R  1000:1000 /app/storage/logs
+
 COPY docker/supervisor/supervisor.conf /etc/supervisord.conf
+
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
