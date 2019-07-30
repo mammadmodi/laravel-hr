@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Template
+objects:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: "${APPLICATION_NAME}-env"
+    data:
+      APP_KEY: "base64:Kc3A72E+ROSkaO7KmAxKAAgdox1a8BBVOpeRgWdwitw="
+      APP_ENV: "testing"
+      APP_DEBUG: "true"
+      APP_TIMEZONE: "Asia/Tehran"
+      APP_LOCALE: "fa"
+      LOG_LEVEL: "debug"
+      CACHE_DRIVER: "array"
+
+      DB_HOST: "${DB_HOST}"
+      DB_PORT: "${DB_PORT}"
+      DB_DATABASE: "${DB_DATABASE}"
+
+      REDIS_HOST: "${REDIS_HOST}"
+      REDIS_PORT: "${REDIS_PORT}"
+      DEFAULT_QUEUE_CONNECTION: "notification"
+
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: "${APPLICATION_NAME}-rr"
+    data:
+      roundrunner.yaml: |-
+        http:
+          address: :8080+
+          workers:
+            command: "php psr-worker.php"
+            pool:
+              numWorkers: 1
+        rpc:
+          enable: false
+parameters:
+  - name: APPLICATION_NAME
+    value: "snapp-hr"
+    required: true
+
+  - name: DB_HOST
+    value: "mysql"
+    required: true
+
+  - name: DB_PORT
+    value: "3306"
+    required: true
+
+  - name: DB_DATABASE
+    value: "snapp_hr"
+    required: true
+
+  - name: REDIS_HOST
+    value: "redis"
+    required: true
+
+  - name: REDIS_PORT
+    value: "6379"
+    required: true

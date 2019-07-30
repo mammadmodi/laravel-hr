@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'notification'),
+    'default' => env('DEFAULT_QUEUE_CONNECTION', 'notification'),
 
     /*
     |--------------------------------------------------------------------------

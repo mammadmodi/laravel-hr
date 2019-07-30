@@ -1,0 +1,5 @@
+FROM registry.snapp.tech/docker/php:7.2-supervisor-alpine3.8
+
+MAINTAINER Mohammad Abdoli Rad <mohammad.abdolirad@snapp.cab>
+RUN apk add php7-redis
+COPY ./ /app
