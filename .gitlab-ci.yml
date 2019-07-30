@@ -1,58 +1,58 @@
 stages:
-#  - prepare
-#  - test
+  - prepare
+  - test
   - release
-#  - deploy
+  - deploy
 
 variables:
   OKD_REGISTRY: 'registry.apps.private.teh-1.snappcloud.io'
   OKD_PROJECT_NAME: 'modares-test-env'
   APP_NAME: 'snapp-hr'
   OKD_CLUSTER_ADDRESS: 'https://okd.private.teh-1.snappcloud.io'
-prepare:
-  image: registry.snapp.tech/docker/php:7.2-cli-alpine3.8
-  stage: prepare
-  variables:
-    COMPOSER_HOME: '.composer'
-    COMPOSER_PROCESS_TIMEOUT: 900
-  before_script:
-    - apk add php7.2-fileinfo
-  script:
-    - composer install --no-interaction --no-suggest
-  cache:
-    key: composer
-    paths:
-      - .composer/
-      - vendor/
-
-phpunit:
-  image: registry.snapp.tech/docker/php:7.2-cli-alpine3.8
-  stage: test
-  variables:
-    MYSQL_DATABASE: 'default'
-    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-    APP_ENV: 'testing'
-    APP_DEBUG: 'true'
-    REDIS_HOST: 'redis-queue'
-    CACHE_DRIVER: 'array'
-    QUEUE_CONNECTION: 'notification'
-  services:
-    - name: redis:4.0.11-alpine
-      alias: redis-queue
-    - name: mariadb:10.2.14
-      alias: db
-  before_script:
-    - apk add php7-xdebug
-    - sed -i 's/;zend_extension/zend_extension/g' /etc/php/7.2/conf.d/xdebug.ini
-    - php ./artisan migrate --seed
-  script:
-    - php -d memory_limit=1G vendor/bin/phpunit --coverage-text --colors=never --stop-on-error
-  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
-  cache:
-    key: composer
-    paths:
-      - vendor
-    policy: pull
+#prepare:
+#  image: registry.snapp.tech/docker/php:7.2-cli-alpine3.8
+#  stage: prepare
+#  variables:
+#    COMPOSER_HOME: '.composer'
+#    COMPOSER_PROCESS_TIMEOUT: 900
+#  before_script:
+#    - apk add php7.2-fileinfo
+#  script:
+#    - composer install --no-interaction --no-suggest
+#  cache:
+#    key: composer
+#    paths:
+#      - .composer/
+#      - vendor/
+#
+#phpunit:
+#  image: registry.snapp.tech/docker/php:7.2-cli-alpine3.8
+#  stage: test
+#  variables:
+#    MYSQL_DATABASE: 'default'
+#    MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+#    APP_ENV: 'testing'
+#    APP_DEBUG: 'true'
+#    REDIS_HOST: 'redis-queue'
+#    CACHE_DRIVER: 'array'
+#    QUEUE_CONNECTION: 'notification'
+#  services:
+#    - name: redis:4.0.11-alpine
+#      alias: redis-queue
+#    - name: mariadb:10.2.14
+#      alias: db
+#  before_script:
+#    - apk add php7-xdebug
+#    - sed -i 's/;zend_extension/zend_extension/g' /etc/php/7.2/conf.d/xdebug.ini
+#    - php ./artisan migrate --seed
+#  script:
+#    - php -d memory_limit=1G vendor/bin/phpunit --coverage-text --colors=never --stop-on-error
+#  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+#  cache:
+#    key: composer
+#    paths:
+#      - vendor
+#    policy: pull
 
 build-rr:
   image: docker:git
@@ -90,10 +90,10 @@ build-sv:
       - vendor
     policy: pull
 
-deploy:
-  image: openshift/origin-cli:v3.10
-  stage: deploy
-  script:
-    - oc login ${OKD_CLUSTER_ADDRESS} --token=${OKD_TOKEN}
-    - oc project ${OKD_PROJECT_NAME}
-    - oc apply -f okd.yml
+#deploy:
+#  image: openshift/origin-cli:v3.10
+#  stage: deploy
+#  script:
+#    - oc login ${OKD_CLUSTER_ADDRESS} --token=${OKD_TOKEN}
+#    - oc project ${OKD_PROJECT_NAME}
+#    - oc apply -f okd.yml
