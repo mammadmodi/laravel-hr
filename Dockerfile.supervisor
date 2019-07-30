@@ -1,13 +1,5 @@
 FROM dockage/php:7.2.16-supervisor-alpine3.8
 
-LABEL maintainer="mohammad.abdolirad@snapp.cab" \
-    org.label-schema.name="php" \
-    org.label-schema.vendor="docker" \
-    org.label-schema.description="Snapp PHP base image" \
-    org.label-schema.version="7.2"
-
-ENV APP_INSTALL_DIR="/app"
-
 RUN apk --no-cache --update add \
         composer \
         file \
@@ -37,9 +29,11 @@ RUN apk --no-cache --update add \
         php7.2-xmlreader \
         php7.2-xmlwriter \
         php7.2-zip \
-        php7.2-zlib
+        php7.2-zlib\
+        php7.2-redis\
+        php7.2-fileinfo
 
-RUN mkdir -p /root/.ssh ${APP_INSTALL_DIR} \
+RUN mkdir -p /root/.ssh /app \
     # Configure PHP
     && sed -i -e "s/;date.timezone =.*/date.timezone = Asia\/Tehran/g" /etc/php/7.2/php.ini \
     # Configure SSH known_hosts
@@ -51,5 +45,19 @@ RUN mkdir -p /root/.ssh ${APP_INSTALL_DIR} \
         /etc/supervisord.conf \
     && chgrp 0 /etc/supervisord.conf /run /var/log \
     && chmod g=u /etc/supervisord.conf /run /var/log
+COPY ./ /app
+WORKDIR /app
 
-WORKDIR ${APP_INSTALL_DIR}
+
+
+
+RUN mkdir -p /var/log/supervisor
+
+RUN chown -R  superuser:superuser /var/log/supervisor
+RUN chown -R  superuser:superuser /app/storage/logs
+
+COPY docker/supervisor/supervisor.conf /etc/supervisord.conf
+
+USER superuser
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
