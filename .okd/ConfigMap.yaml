@@ -21,7 +21,6 @@ objects:
       REDIS_HOST: "${REDIS_HOST}"
       REDIS_PORT: "${REDIS_PORT}"
       DEFAULT_QUEUE_CONNECTION: "notification"
-
   - apiVersion: v1
     kind: ConfigMap
     metadata:
@@ -29,7 +28,7 @@ objects:
     data:
       roundrunner.yaml: |-
         http:
-          address: :8080
+          address: :${RR_PORT}
           workers:
             command: "php psr-worker.php"
             pool:
@@ -59,4 +58,8 @@ parameters:
 
   - name: REDIS_PORT
     value: "6379"
+    required: true
+
+  - name: RR_PORT
+    value: "8080"
     required: true
