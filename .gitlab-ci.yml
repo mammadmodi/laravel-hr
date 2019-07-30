@@ -89,11 +89,11 @@ build-sv:
     paths:
       - vendor
     policy: pull
-
-deploy:
-  image: openshift/origin-cli:v3.10
-  stage: deploy
-  script:
-    - oc login ${OKD_CLUSTER_ADDRESS} --token=${OKD_TOKEN}
-    - oc project ${OKD_PROJECT_NAME}
-    - oc apply -f okd.yml
+#
+#deploy:
+#  image: openshift/origin-cli:v3.10
+#  stage: deploy
+#  script:
+#    - oc login ${OKD_CLUSTER_ADDRESS} --token=${OKD_TOKEN}
+#    - oc project ${OKD_PROJECT_NAME}
+#    - oc apply -f okd.yml

@@ -42,13 +42,10 @@ objects:
                 - containerPort: 8080
                   protocol: TCP
               volumeMounts:
-                - name: "${APPLICATION_NAME}-env"
+                - name: "${APPLICATION_NAME}-config"
                   mountPath: "/app/.rr.yaml"
                   subPath: roundrunner.yaml
           volumes:
-            - name: "${APPLICATION_NAME}-data"
-              emptyDir:
-                medium: ''
             - name: "${APPLICATION_NAME}-config"
               configMap:
                 name: "${APPLICATION_NAME}"

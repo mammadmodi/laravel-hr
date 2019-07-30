@@ -1,5 +1,6 @@
-FROM registry.snapp.tech/docker/php:7.2-supervisor-alpine3.8
+FROM registry.snapp.tech/docker/php:7.2-cli-alpine3.8
 
-MAINTAINER Mohammad Abdoli Rad <mohammad.abdolirad@snapp.cab>
-RUN apk add php7-redis
-COPY ./ /app
+FROM alpine:latest
+RUN apk update && apk add --no-cache supervisor
+COPY docker/supervisor/supervisor.conf /etc/supervisord.conf
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
