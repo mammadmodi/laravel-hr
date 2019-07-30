@@ -29,7 +29,7 @@ objects:
     data:
       roundrunner.yaml: |-
         http:
-          address: :8080+
+          address: :8080
           workers:
             command: "php psr-worker.php"
             pool:

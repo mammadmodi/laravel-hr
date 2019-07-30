@@ -30,11 +30,18 @@ objects:
         spec:
           containers:
             - name: roadrunner
-              image: "${REGISTRY_URI}/${PROJECT_NAME}/${APPLICATION_NAME}-rr:${IMAGE_TAG}"
+              image: "${REGISTRY_URI}/${PROJECT_NAME}/${APPLICATION_NAME}-roadrunner:${IMAGE_TAG}"
               imagePullPolicy: Always
               resources:
                 limits:
                   memory: 512Mi
+              env:
+                - name: DB_USERNAME
+                  value: admin
+                - name: DB_PASSWORD
+                  value: admin13243546
+                - name: REDIS_PASSWORD
+                  value: WQil6JbQfE7BBVB6
               envFrom:
                 - configMapRef:
                     name: "${APPLICATION_NAME}-env"
@@ -42,13 +49,13 @@ objects:
                 - containerPort: 8080
                   protocol: TCP
               volumeMounts:
-                - name: "${APPLICATION_NAME}-config"
+                - name: "${APPLICATION_NAME}-rr"
                   mountPath: "/app/.rr.yaml"
                   subPath: roundrunner.yaml
           volumes:
-            - name: "${APPLICATION_NAME}-config"
+            - name: "${APPLICATION_NAME}-rr"
               configMap:
-                name: "${APPLICATION_NAME}"
+                name: "${APPLICATION_NAME}-rr"
           dnsPolicy: ClusterFirst
           restartPolicy: Always
           terminationGracePeriodSeconds: 30
