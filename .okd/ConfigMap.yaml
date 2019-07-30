@@ -12,8 +12,9 @@ objects:
       APP_TIMEZONE: "Asia/Tehran"
       APP_LOCALE: "fa"
       LOG_LEVEL: "debug"
-      CACHE_DRIVER: "array"
+      CACHE_DRIVER: "file"
 
+      DB_CONNECTION: "mysql"
       DB_HOST: "${DB_HOST}"
       DB_PORT: "${DB_PORT}"
       DB_DATABASE: "${DB_DATABASE}"
@@ -21,6 +22,13 @@ objects:
       REDIS_HOST: "${REDIS_HOST}"
       REDIS_PORT: "${REDIS_PORT}"
       DEFAULT_QUEUE_CONNECTION: "notification"
+      APP_URL: "https://snapp-hr-modares-test-env.apps.private.teh-1.snappcloud.io"
+      LOG_CHANNEL: stack
+
+      BROADCAST_DRIVER: "log"
+      SESSION_DRIVER: "file"
+      SESSION_LIFETIME: "120"
+      JWT_SECRET: "tAL7Kcl1UnareF2hXHzadzSnLATVvtPLANxXrkDQZ83jwnQ8T5mmnfZwVrnYmLZe"
   - apiVersion: v1
     kind: ConfigMap
     metadata:
