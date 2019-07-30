@@ -48,16 +48,8 @@ RUN mkdir -p /root/.ssh /app \
 COPY ./ /app
 WORKDIR /app
 
-
-
-
 RUN mkdir -p /var/log/supervisor
 
-RUN chown -R  superuser:superuser /var/log/supervisor
-RUN chown -R  superuser:superuser /app/storage/logs
-
 COPY docker/supervisor/supervisor.conf /etc/supervisord.conf
-
-USER superuser
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
