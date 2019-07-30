@@ -6,16 +6,17 @@ RUN apk update && apk add --no-cache supervisor && apk add vim && apk add php7-r
 
 COPY ./ /app
 
-RUN groupadd -g 1000 superuser
-RUN useradd -u 1000 -ms /bin/bash -g superuser superuser
+RUN addgroup -S superuser
+Run adduser -S superuser -G superuser
+
 
 RUN mkdir -p /var/log/supervisor
 
-RUN chown -R  1000:1000 /var/log/supervisor
-RUN chown -R  1000:1000 /app/storage/logs
+RUN chown -R  superuser:superuser /var/log/supervisor
+RUN chown -R  superuser:superuser /app/storage/logs
 
 COPY docker/supervisor/supervisor.conf /etc/supervisord.conf
 
-USER www
+USER superuser
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
