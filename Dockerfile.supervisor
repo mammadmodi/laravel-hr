@@ -13,4 +13,4 @@ RUN chown -R  1000:1000 /app/storage/logs
 
 COPY docker/supervisor/supervisor.conf /etc/supervisord.conf
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["php", "/app/artisan", "serve", "--port=8091"]
