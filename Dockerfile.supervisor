@@ -3,12 +3,9 @@ FROM registry.snapp.tech/docker/php:7.2-cli-alpine3.8
 RUN apk --no-cache --update add \
         supervisor
 
-RUN mkdir -p /root/.ssh /app \
-    && mkdir -p /run
-    && mkdir -p /var/log
+RUN mkdir -p /root/.ssh /app /run /var/log\
     # Configure PHP
     && sed -i -e "s/;date.timezone =.*/date.timezone = Asia\/Tehran/g" /etc/php/7.2/php.ini \
-    # Compatiable with OpenShift
     && sed -i \
         -e '/user=.*/d' \
         -e 's#;pidfile=.*#pidfile=/run/supervisord.pid#g' \
