@@ -64,6 +64,7 @@ build-rr:
     - docker login -u gitlab-ci -p ${OKD_TOKEN} -u unused ${OKD_REGISTRY}
   script:
     - docker build  -t ${IMAGE_NAME} .
+    - docker login -p ${OKD_PROJECT_TOKEN} -u unused ${OKD_REGISTRY}
   after_script:
     - docker push ${IMAGE_NAME}
   cache:
