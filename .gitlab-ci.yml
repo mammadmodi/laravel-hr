@@ -96,7 +96,7 @@ deploy:
   image: openshift/origin-cli:v3.10
   stage: deploy
   before_script:
-    - oc login ${OKD_CLUSTER_ADDRESS} --token=${OKD_TOKEN}
+    - oc login ${OKD_CLUSTER_ADDRESS} --token=${OKD_PROJECT_TOKEN}
     - oc project ${OKD_PROJECT_NAME}
   script:
     - oc process -f .okd/ConfigMap.yaml --ignore-unknown-parameters=true | oc apply -f -
