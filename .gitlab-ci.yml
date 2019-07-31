@@ -61,10 +61,9 @@ build-rr:
     IMAGE_NAME: "${OKD_REGISTRY}/${OKD_PROJECT_NAME}/${APP_NAME}-roadrunner:${CI_COMMIT_REF_SLUG}"
   before_script:
     - docker info
-    - docker login -u gitlab-ci -p ${OKD_TOKEN} -u unused ${OKD_REGISTRY}
+    - docker login -p ${OKD_PROJECT_TOKEN} -u unused ${OKD_REGISTRY}
   script:
     - docker build  -t ${IMAGE_NAME} .
-    - docker login -p ${OKD_PROJECT_TOKEN} -u unused ${OKD_REGISTRY}
   after_script:
     - docker push ${IMAGE_NAME}
   cache:
@@ -80,10 +79,9 @@ build-sv:
     IMAGE_NAME: "${OKD_REGISTRY}/${OKD_PROJECT_NAME}/${APP_NAME}-supervisor:${CI_COMMIT_REF_SLUG}"
   before_script:
     - docker info
-    - docker login -u gitlab-ci -p ${OKD_TOKEN} -u unused ${OKD_REGISTRY}
+    - docker login -p ${OKD_PROJECT_TOKEN} -u unused ${OKD_REGISTRY}
   script:
     - docker build -f Dockerfile.supervisor -t ${IMAGE_NAME} .
-    - docker login -p ${OKD_PROJECT_TOKEN} -u unused ${OKD_REGISTRY}
   after_script:
     - docker push ${IMAGE_NAME}
   cache:
