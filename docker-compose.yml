@@ -70,6 +70,24 @@ services:
       MYSQL_PORT: 3306
     networks:
       - app-network
+  rabbit_node:
+    environment:
+      - RABBITMQ_ERLANG_COOKIE='secret_cookie'
+    networks:
+      - app-network
+    hostname: rabbit_node
+    image: "rabbitmq:3-management"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    tty: true
+    volumes:
+      - rabbit:/var/lib/rabbitmq
+      - ./docker/rabbitmq/conf/:/etc/rabbitmq/
+    command:  bash -c "sleep 10; rabbitmq-server;"
+volumes:
+  rabbit:
+    driver: local
 networks:
   app-network:
     driver: bridge
