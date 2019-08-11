@@ -11,16 +11,6 @@
 |
 */
 
-use App\Models\Leave;
-use App\Repositories\Leaves\LeaveRepositoryInterface;
-use App\Repositories\Leaves\SqlLeaveRepository;
-use App\Services\Notify\MqttClient;
-use App\Services\Notify\NotifierInterface;
-use Symfony\Component\Workflow\DefinitionBuilder;
-use Symfony\Component\Workflow\Registry;
-use Symfony\Component\Workflow\SupportStrategy\InstanceOfSupportStrategy;
-use Symfony\Component\Workflow\Workflow;
-
 $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
@@ -50,31 +40,6 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
-
-$app->singleton(LeaveRepositoryInterface::class, function () {
-    return new SqlLeaveRepository();
-});
-
-$app->singleton('leave_workflow', function () {
-    $definitionBuilder = new DefinitionBuilder(Leave::getStates(), Leave::getTransitions());
-    $definition = $definitionBuilder->build();
-    $marking = Leave::getMarking();
-
-    return new Workflow($definition, $marking, null, 'leave_workflow');
-});
-
-$app->singleton(Registry::class, function () use ($app){
-    $registry = new Registry();
-    /** @var Workflow $leaveWorkFlow */
-    $leaveWorkFlow = $app->make('leave_workflow');
-    $registry->addWorkflow($leaveWorkFlow, new InstanceOfSupportStrategy(Leave::class));
-
-    return $registry;
-});
-
-$app->singleton(NotifierInterface::class,function () {
-    return new MqttClient();
-});
 
 /*
 |--------------------------------------------------------------------------

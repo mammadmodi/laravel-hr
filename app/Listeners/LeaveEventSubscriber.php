@@ -3,8 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\Leave\Created;
-use App\Jobs\NotifyJob;
 use App\Repositories\Leaves\LeaveRepositoryInterface;
+use App\Services\Notify\NotifierInterface;
 use Illuminate\Events\Dispatcher;
 
 class LeaveEventSubscriber
@@ -34,7 +34,8 @@ class LeaveEventSubscriber
         $messageBody = "$user->name has requested a leave from $leave->start to $leave->end";
 
         foreach ($userManagers as $userManager) {
-            NotifyJob::dispatch($userManager, $messageBody)->onQueue('notification');
+            $mqttCli = app(NotifierInterface::class);
+            $mqttCli->send($userManager, $messageBody);
         }
     }
 

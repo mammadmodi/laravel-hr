@@ -2,11 +2,9 @@
 
 namespace Tests\Feature\Controllers\V1;
 
-use App\Jobs\NotifyJob;
 use App\Models\Leave;
 use App\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class LeaveControllerTest extends TestCase
@@ -106,7 +104,6 @@ class LeaveControllerTest extends TestCase
      */
     public function test_create_action_successfully()
     {
-        Queue::fake();
         $user = $this->getUserWithLeaves(0, Role::ROLE_EMPLOYEE);
         //create 5 manager for user's department.
         $managersCount = 5;
@@ -135,7 +132,6 @@ class LeaveControllerTest extends TestCase
             ])
         ;
 
-        Queue::assertPushed(NotifyJob::class, $managersCount);
     }
 
     /**

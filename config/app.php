@@ -1,5 +1,7 @@
 <?php
 
+use App\Services\Notify\NotifierServiceProvider;
+
 return [
 
     /*
@@ -166,6 +168,7 @@ return [
          */
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+        NotifierServiceProvider::class,
 
         /*
          * Application Service Providers...
