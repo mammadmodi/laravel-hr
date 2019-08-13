@@ -17,6 +17,8 @@ prepare:
     COMPOSER_PROCESS_TIMEOUT: 900
   before_script:
     - apk add php7.2-fileinfo
+    - apk add php7.2-bcmath
+    - apk add php7.2-sockets
   script:
     - composer install --no-interaction --no-suggest
   cache:
