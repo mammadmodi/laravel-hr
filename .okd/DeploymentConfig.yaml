@@ -61,31 +61,31 @@ objects:
                 - name: "${APPLICATION_NAME}-rr"
                   mountPath: "/app/.rr.yaml"
                   subPath: roundrunner.yaml
-            - name: supervisor
-              image: "${REGISTRY_URI}/${PROJECT_NAME}/${APPLICATION_NAME}-supervisor:${IMAGE_TAG}"
-              imagePullPolicy: Always
-              resources:
-                limits:
-                  memory: 512Mi
-              env:
-                - name: DB_USERNAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: mysql
-                      key: database-user
-                - name: DB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: mysql
-                      key: database-password
-                - name: REDIS_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: redis
-                      key: database-password
-              envFrom:
-                - configMapRef:
-                    name: "${APPLICATION_NAME}-env"
+#            - name: supervisor
+#              image: "${REGISTRY_URI}/${PROJECT_NAME}/${APPLICATION_NAME}-supervisor:${IMAGE_TAG}"
+#              imagePullPolicy: Always
+#              resources:
+#                limits:
+#                  memory: 512Mi
+#              env:
+#                - name: DB_USERNAME
+#                  valueFrom:
+#                    secretKeyRef:
+#                      name: mysql
+#                      key: database-user
+#                - name: DB_PASSWORD
+#                  valueFrom:
+#                    secretKeyRef:
+#                      name: mysql
+#                      key: database-password
+#                - name: REDIS_PASSWORD
+#                  valueFrom:
+#                    secretKeyRef:
+#                      name: redis
+#                      key: database-password
+#              envFrom:
+#                - configMapRef:
+#                    name: "${APPLICATION_NAME}-env"
           volumes:
             - name: "${APPLICATION_NAME}-rr"
               configMap:
@@ -103,14 +103,14 @@ objects:
             kind: ImageStreamTag
             name: 'snapp-hr-roadrunner:master'
             namespace: modares-test-env
-      - imageChangeParams:
-          automatic: true
-          containerNames:
-            - snapp-hr-supervisor
-          from:
-            kind: ImageStreamTag
-            name: 'snapp-hr-supervisor:master'
-            namespace: modares-test-env
+#      - imageChangeParams:
+#          automatic: true
+#          containerNames:
+#            - snapp-hr-supervisor
+#          from:
+#            kind: ImageStreamTag
+#            name: 'snapp-hr-supervisor:master'
+#            namespace: modares-test-env
         type: ImageChange
 parameters:
   - name: APPLICATION_NAME
