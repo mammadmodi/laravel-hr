@@ -19,10 +19,11 @@ objects:
       DB_PORT: "${DB_PORT}"
       DB_DATABASE: "${DB_DATABASE}"
 
-      REDIS_HOST: "${REDIS_HOST}"
-      REDIS_PORT: "${REDIS_PORT}"
-      DEFAULT_QUEUE_CONNECTION: "notification"
-      APP_URL: "https://snapp-hr-modares-test-env.apps.private.teh-1.snappcloud.io"
+      RABBITMQ_HOST: "${RABBITMQ_HOST}"
+      RABBITMQ_PORT: "${RABBITMQ_PORT}"
+      RABBITMQ_NOTIFICATION_QUEUE: "${RABBITMQ_NOTIFICATION_QUEUE}"
+
+      APP_URL: "https://snapp-hr-test-env.apps.private.teh-1.snappcloud.io"
       LOG_CHANNEL: stack
 
       BROADCAST_DRIVER: "log"
@@ -60,14 +61,18 @@ parameters:
     value: "snapp_hr"
     required: true
 
-  - name: REDIS_HOST
-    value: "redis"
-    required: true
-
-  - name: REDIS_PORT
-    value: "6379"
-    required: true
-
   - name: RR_PORT
     value: "8080"
+    required: true
+
+  - name: RABBITMQ_HOST
+    value: "rabbitmq"
+    required: true
+
+  - name: RABBITMQ_PORT
+    value: "5672"
+    required: true
+
+  - name: RABBITMQ_NOTIFICATION_QUEUE
+    value: "notification"
     required: true

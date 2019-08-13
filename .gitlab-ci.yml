@@ -45,6 +45,8 @@ phpunit:
       alias: db
   before_script:
     - apk add php7-xdebug
+    - apk add php7.2-bcmath
+    - apk add php7.2-sockets
     - sed -i 's/;zend_extension/zend_extension/g' /etc/php/7.2/conf.d/xdebug.ini
     - php ./artisan migrate --seed
   script:
@@ -73,24 +75,6 @@ build-rr:
     paths:
       - vendor
     policy: pull
-
-#build-sv:
-#  image: docker:git
-#  stage: release
-#  variables:
-#    IMAGE_NAME: "${OKD_REGISTRY}/${OKD_PROJECT_NAME}/${APP_NAME}-supervisor:${CI_COMMIT_REF_SLUG}"
-#  before_script:
-#    - docker info
-#    - docker login -p ${OKD_PROJECT_TOKEN} -u unused ${OKD_REGISTRY}
-#  script:
-#    - docker build -f Dockerfile.supervisor -t ${IMAGE_NAME} .
-#  after_script:
-#    - docker push ${IMAGE_NAME}
-#  cache:
-#    key: composer
-#    paths:
-#      - vendor
-#    policy: pull
 
 deploy:
   image: openshift/origin-cli:v3.10

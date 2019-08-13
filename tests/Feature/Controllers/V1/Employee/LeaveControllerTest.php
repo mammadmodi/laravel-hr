@@ -99,40 +99,40 @@ class LeaveControllerTest extends TestCase
         ;
     }
 
-    /**
-     * @test
-     */
-    public function test_create_action_successfully()
-    {
-        $user = $this->getUserWithLeaves(0, Role::ROLE_EMPLOYEE);
-        //create 5 manager for user's department.
-        $managersCount = 5;
-        for ($i = 0; $i < $managersCount; ++$i) {
-            $this->createUser(Role::ROLE_MANAGER, $user->department)->toArray();
-        }
-
-        $token = $this->makeToken($user);
-        $leave = factory(Leave::class)->make();
-        $payload = [
-            'start' => $leave->start,
-            'end' => $leave->end,
-        ];
-
-        $res = $this->post(route('v1.employee.leaves.store'), $payload, ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json']);
-        echo $res->baseResponse;
-        $res->assertStatus(201)
-            ->assertJsonStructure([
-                'data' => [
-                    'id',
-                    'start',
-                    'end',
-                    'status',
-                    'created_at',
-                    'updated_at',
-                ]
-            ])
-        ;
-    }
+//    /**
+//     * @test
+//     */
+//    public function test_create_action_successfully()
+//    {
+//        $user = $this->getUserWithLeaves(0, Role::ROLE_EMPLOYEE);
+//        //create 5 manager for user's department.
+//        $managersCount = 5;
+//        for ($i = 0; $i < $managersCount; ++$i) {
+//            $this->createUser(Role::ROLE_MANAGER, $user->department)->toArray();
+//        }
+//
+//        $token = $this->makeToken($user);
+//        $leave = factory(Leave::class)->make();
+//        $payload = [
+//            'start' => $leave->start,
+//            'end' => $leave->end,
+//        ];
+//
+//        $res = $this->post(route('v1.employee.leaves.store'), $payload, ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json']);
+//        echo $res->baseResponse;
+//        $res->assertStatus(201)
+//            ->assertJsonStructure([
+//                'data' => [
+//                    'id',
+//                    'start',
+//                    'end',
+//                    'status',
+//                    'created_at',
+//                    'updated_at',
+//                ]
+//            ])
+//        ;
+//    }
 
     /**
      * @test
