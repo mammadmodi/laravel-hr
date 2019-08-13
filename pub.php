@@ -7,8 +7,8 @@ use PhpAmqpLib\Message\AMQPMessage;
 $connection = new AMQPStreamConnection(
     "rabbitmq",
     5672,
-    "userR0F",
-    "fkjg4I3VrxTbirQo"
+    "guest",
+    "guest"
 );
 $channel = $connection->channel();
 

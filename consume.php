@@ -7,8 +7,8 @@ require_once __DIR__."/vendor/autoload.php";
 $connection = new AMQPStreamConnection(
     "rabbitmq",
     5672,
-    "userR0F",
-    "fkjg4I3VrxTbirQo"
+    "guest",
+    "guest"
 );
 
 $channel = $connection->channel();
