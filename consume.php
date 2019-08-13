@@ -15,7 +15,7 @@ $channel = $connection->channel();
 
 
 
-$channel->queue_declare('task_queue', false, true, false, false);
+$channel->queue_declare('notification', false, false, false, false);
 
 echo " [*] Waiting for messages. To exit press CTRL+C\n";
 
@@ -27,7 +27,7 @@ $callback = function ($msg) {
 };
 
 $channel->basic_qos(null, 1, null);
-$channel->basic_consume('task_queue', '', false, false, false, false, $callback);
+$channel->basic_consume('notification', '', false, false, false, false, $callback);
 
 while ($channel->is_consuming()) {
     $channel->wait();
