@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: Template
+objects:
+  - apiVersion: v1
+    data:
+      rabbitmq-password: a2FxNDZzcndMNmF3TG5hMA==
+      rabbitmq-user: dXNlcjM1VA==
+    stringData:
+      rabbitmq-erlang-cookie: secret_cookie
+    kind: Secret
+    metadata:
+      labels:
+        app: rabbitmq-replicated
+      name: rabbitmq
+    type: Opaque
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app: rabbitmq
+      name: rabbitmq
+      namespace: test-env
+    spec:
+      ports:
+        - name: 4369-tcp
+          port: 4369
+          protocol: TCP
+          targetPort: 4369
+        - name: 5671-tcp
+          port: 5671
+          protocol: TCP
+          targetPort: 5671
+        - name: 5672-tcp
+          port: 5672
+          protocol: TCP
+          targetPort: 5672
+        - name: 15671-tcp
+          port: 15671
+          protocol: TCP
+          targetPort: 15671
+        - name: 15672-tcp
+          port: 15672
+          protocol: TCP
+          targetPort: 15672
+        - name: 25672-tcp
+          port: 25672
+          protocol: TCP
+          targetPort: 25672
+      selector:
+        deploymentconfig: rabbitmq
+      sessionAffinity: None
+      type: ClusterIP
+
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      labels:
+        deploymentconfig: rabbitmq
+      name: rabbitmq
+    spec:
+      replicas: 1
+      selector:
+        application: rabbitmq
+        deploymentconfig: rabbitmq
+      strategy:
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 600
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            application: rabbitmq
+            app: rabbitmq
+            deploymentconfig: rabbitmq
+        spec:
+          containers:
+            - name: rabbitmq
+              image: "${REGISTRY_URI}/${PROJECT_NAME}/rabbitmq:latest"
+              imagePullPolicy: Always
+              env:
+                - name: RABBITMQ_ERLANG_COOKIE
+                  valueFrom:
+                    secretKeyRef:
+                      name: rabbitmq
+                      key: rabbitmq-erlang-cookie
+                - name: RABBITMQ_DEFAULT_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: rabbitmq
+                      key: rabbitmq-user
+                - name: RABBITMQ_DEFAULT_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: rabbitmq
+                      key: rabbitmq-password
+              ports:
+                - containerPort: 4369
+                  protocol: TCP
+                - containerPort: 5671
+                  protocol: TCP
+                - containerPort: 5672
+                  protocol: TCP
+                - containerPort: 15671
+                  protocol: TCP
+                - containerPort: 15672
+                  protocol: TCP
+                - containerPort: 25672
+                  protocol: TCP
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          terminationGracePeriodSeconds: 30
+    triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+            - rabbitmq
+          from:
+            kind: ImageStreamTag
+            name: 'rabbitmq:latest'
+        type: ImageChange
+parameters:
+  - name: REGISTRY_URI
+    displayName: Cloud Docker Registry base url
+    value: docker-registry.default.svc:5000
+    required: true
+
+  - name: PROJECT_NAME
+    value: test-env
+    required: true
