@@ -118,8 +118,9 @@ class LeaveControllerTest extends TestCase
             'end' => $leave->end,
         ];
 
-        $this->post(route('v1.employee.leaves.store'), $payload, ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json'])
-            ->assertStatus(201)
+        $res = $this->post(route('v1.employee.leaves.store'), $payload, ['Authorization' => 'Bearer ' . $token, 'Accept' => 'application/json']);
+        echo $res->baseResponse;
+        $res->assertStatus(201)
             ->assertJsonStructure([
                 'data' => [
                     'id',
@@ -131,7 +132,6 @@ class LeaveControllerTest extends TestCase
                 ]
             ])
         ;
-
     }
 
     /**
