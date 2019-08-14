@@ -28,14 +28,12 @@ class NotifierServiceProvider extends ServiceProvider
         $this->app->singleton(MqttClient::class,function () {
             /** @var AMQPStreamConnection $connection */
             $connection = $this->app->get('amqp_connection');
-            $channel = $connection->channel();
-            $channel->queue_declare(env('RABBITMQ_NOTIFICATION_QUEUE'), false, false, false, false);
 
-            return $channel;
+            return new MqttClient($connection);
         });
 
         $this->app->singleton(NotifierInterface::class,function () {
-            return new MqttClient($this->app->get(MqttClient::class));
+            return $this->app->get(MqttClient::class);
         });
     }
 }
