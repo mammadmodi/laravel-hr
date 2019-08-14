@@ -14,7 +14,7 @@ class NotifierServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('amqp_connection', function () {
+        $this->app->bind('amqp_connection', function () {
             $connection = new AMQPStreamConnection(
                 env('RABBITMQ_HOST', 'localhost'),
                 env('RABBITMQ_PORT', 5672),
@@ -25,14 +25,14 @@ class NotifierServiceProvider extends ServiceProvider
             return $connection;
         });
 
-        $this->app->singleton(MqttClient::class,function () {
+        $this->app->bind(MqttClient::class,function () {
             /** @var AMQPStreamConnection $connection */
             $connection = $this->app->get('amqp_connection');
 
             return new MqttClient($connection);
         });
 
-        $this->app->singleton(NotifierInterface::class,function () {
+        $this->app->bind(NotifierInterface::class,function () {
             return $this->app->get(MqttClient::class);
         });
     }
