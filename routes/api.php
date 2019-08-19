@@ -34,7 +34,7 @@ Route::group([
         'as' => 'employee.',
     ], function (Router $router) {
         $router->resource('leaves', 'LeaveController')->only(['index', 'store', 'show']);
-        $router->patch('{leaf}/cancel', 'LeaveController@cancel')->name('leaves.cancel');
+        $router->patch('leaves/{leaf}/cancel', 'LeaveController@cancel')->name('leaves.cancel');
     });
 
     $router->group([
