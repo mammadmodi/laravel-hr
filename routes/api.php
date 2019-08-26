@@ -26,6 +26,7 @@ Route::group([
         $router->get('logout', 'AuthController@logout')->name('logout');
         $router->get('refresh', 'AuthController@refresh')->name('refresh');
         $router->get('me', 'AuthController@me')->name('me');
+        $router->get('validate', 'AuthController@validateToken')->name('validate');
     });
 
     $router->group([

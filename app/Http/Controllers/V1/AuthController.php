@@ -5,6 +5,8 @@ namespace App\Http\Controllers\V1;
 use App\Http\Resources\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -15,7 +17,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'validateToken']]);
     }
 
     /**
@@ -80,5 +82,27 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
+    }
+
+    /**
+     * Checks that a token is valid or not.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    protected function validateToken(Request $request)
+    {
+        $token= $request->get('token');
+
+        try {
+            JWTAuth::setToken($token);
+            if (! $claim = JWTAuth::getPayload()) {
+                return response(["error" => "token is not valid!"], 401);
+            }
+            return response([], 204);
+
+        } catch (\Exception $exception) {
+            return response(["error" => "token is not valid!"], 401);
+        }
     }
 }
