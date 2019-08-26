@@ -80,4 +80,23 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Leave::class);
     }
+
+    /**
+     * Returns all topics that user can subscribe.
+     *
+     * @return array
+     */
+    public function getTopics()
+    {
+        $topics = [];
+        $roles = $this->getRoleNames();
+
+        foreach ($roles as $role) {
+            /** @var Role $role */
+            $topic = "topics/" . $role . "/" . $this->name;
+            $topics[] = $topic;
+        }
+
+        return $topics;
+    }
 }

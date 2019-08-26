@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Leave;
 use App\Repositories\Leaves\LeaveRepositoryInterface;
 use App\Repositories\Leaves\SqlLeaveRepository;
+use App\Repositories\Users\SqlUserRepository;
+use App\Repositories\Users\UserRepositoryInterface;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Workflow\DefinitionBuilder;
@@ -23,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(LeaveRepositoryInterface::class, function () {
             return new SqlLeaveRepository();
+        });
+
+        $this->app->singleton(UserRepositoryInterface::class, function () {
+            return new SqlUserRepository();
         });
 
         $this->app->singleton('leave_workflow', function () {

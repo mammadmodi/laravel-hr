@@ -27,6 +27,7 @@ Route::group([
         $router->get('refresh', 'AuthController@refresh')->name('refresh');
         $router->get('me', 'AuthController@me')->name('me');
         $router->get('validate', 'AuthController@validateToken')->name('validate');
+        $router->get('topics-acl', 'AuthController@topicsAcl')->name('topics-acl');
     });
 
     $router->group([
