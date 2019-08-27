@@ -56,6 +56,16 @@ objects:
                     secretKeyRef:
                       name: rabbitmq
                       key: rabbitmq-password
+                - name: EMQ_SUPER_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${APPLICATION_NAME}-emq
+                      key: emq-super-user
+                - name: EMQ_SUPER_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${APPLICATION_NAME}-emq
+                      key: emq-super-user
               envFrom:
                 - configMapRef:
                     name: "${APPLICATION_NAME}-env"

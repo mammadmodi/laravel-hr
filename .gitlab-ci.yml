@@ -84,6 +84,7 @@ deploy:
     - oc project ${OKD_PROJECT_NAME}
   script:
     - oc process -f .okd/ConfigMap.yaml --ignore-unknown-parameters=true | oc apply -f -
+    - oc process -f .okd/Secret.yaml --ignore-unknown-parameters=true | oc apply -f -
     - oc process -f .okd/Service.yaml --ignore-unknown-parameters=true | oc apply -f -
     - oc process -f .okd/DeploymentConfig.yaml --ignore-unknown-parameters=true -p IMAGE_TAG=${CI_COMMIT_REF_SLUG} | oc apply -f -
     - oc process -f .okd/Route.yaml --ignore-unknown-parameters=true | oc apply -f -
