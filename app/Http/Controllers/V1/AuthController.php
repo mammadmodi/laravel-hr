@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers\V1;
 
-use App\Models\User;
-use App\Repositories\Users\UserRepositoryInterface;
+use App\Http\Resources\User;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -18,7 +15,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'validateToken', 'topicsAcl']]);
+        $this->middleware('auth:api', ['except' => ['login']]);
     }
 
     /**
@@ -83,50 +80,5 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
-    }
-
-    /**
-     * Checks that a token is valid or not.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    protected function validateToken(Request $request)
-    {
-        $token= $request->get('token');
-
-        try {
-            JWTAuth::setToken($token);
-            if (! $claim = JWTAuth::getPayload()) {
-                return response(["error" => "token is not valid!"], 401);
-            }
-            return response([], 204);
-
-        } catch (\Exception $exception) {
-            return response(["error" => "token is not valid!"], 401);
-        }
-    }
-
-    /**
-     * Checks that acl for user
-     *
-     * @param Request $request
-     * @return JsonResponse
-     */
-    protected function topicsAcl(Request $request)
-    {
-        $name= $request->get('name');
-        $topic= $request->get('topic');
-        $user = app(UserRepositoryInterface::class)->findByName($name);
-
-        if (!$user instanceof User) {
-            return response(["user not found."], 401);
-        }
-
-        if (array_search($topic, $user->getTopics()) !== false) {
-            return response([], 204);
-        }
-
-        return response(["user has not access"], 401);
     }
 }

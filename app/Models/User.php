@@ -82,6 +82,15 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * @param $role
+     * @return string
+     */
+    private function generateTopicForRole($role)
+    {
+        return "topics/" . $role . "/" . $this->name;
+    }
+
+    /**
      * Returns all topics that user can subscribe.
      *
      * @return array
@@ -93,10 +102,25 @@ class User extends Authenticatable implements JWTSubject
 
         foreach ($roles as $role) {
             /** @var Role $role */
-            $topic = "topics/" . $role . "/" . $this->name;
+            $topic = $this->generateTopicForRole($role);
             $topics[] = $topic;
         }
 
         return $topics;
+    }
+
+    /**
+     * Returns private topic for user.
+     *
+     * @return string
+     */
+    public function getPrivateTopic()
+    {
+        $role = $this->getRoleNames()[0] ?? null;
+        if (!empty($role)) {
+            return $this->generateTopicForRole($role);
+        } else {
+            return "";
+        }
     }
 }

@@ -30,7 +30,8 @@ class MqttClient implements NotifierInterface
 
         $body = json_encode([
             'message' => $message,
-            'username' => $user->name
+            'username' => $user->name,
+            'topic' => $user->getPrivateTopic(),
         ]);
 
         $msg = new AMQPMessage($body);
