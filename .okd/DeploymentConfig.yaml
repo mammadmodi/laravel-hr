@@ -65,7 +65,7 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: ${APPLICATION_NAME}-emq
-                      key: emq-super-user
+                      key: emq-super-pass
               envFrom:
                 - configMapRef:
                     name: "${APPLICATION_NAME}-env"
