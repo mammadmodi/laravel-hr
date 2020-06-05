@@ -41,13 +41,12 @@ class UserLeaveController extends Controller
     {
         /** @var User $authenticatedUser */
         $authenticatedUser = auth()->user();
-        if ($authenticatedUser->can('index', [Leave::class, $user])) {
-            $page = (int)$request->get('page') ?? 1;
-
-            return LeaveResource::collection($this->leaveRepository->getUsersLeaves($user, 10, $page));
-        } else {
+        if (!$authenticatedUser->can('index', [Leave::class, $user])) {
             return response(['message' => 'permission denied'], 403);
         }
+        $page = (int)$request->get('page') ?? 1;
+
+        return LeaveResource::collection($this->leaveRepository->getUsersLeaves($user, 10, $page));
     }
 
 
@@ -56,17 +55,17 @@ class UserLeaveController extends Controller
      *
      * @param User $user
      * @param Leave $leaf
-     * @return LeaveResource
+     * @return LeaveResource|ResponseFactory|Response
      */
     public function show(User $user, Leave $leaf)
     {
         /** @var User $authenticatedUser */
         $authenticatedUser = auth()->user();
-        if ($authenticatedUser->can('view', [$leaf, $user])) {
-            return LeaveResource::make($leaf);
-        } else {
+        if (!$authenticatedUser->can('view', [$leaf, $user])) {
             return response(['message' => 'permission denied'], 403);
         }
+
+        return LeaveResource::make($leaf);
     }
 
     /**
@@ -80,22 +79,21 @@ class UserLeaveController extends Controller
     {
         /** @var User $authenticatedUser */
         $authenticatedUser = auth()->user();
-        if ($authenticatedUser->can('approve', [$leaf, $user])) {
-            $workflow = Leave::getWorkflow($leaf);
-
-            if ($workflow->can($leaf, Leave::TRANSITION_APPROVE)) {
-                Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_APPROVE);
-                if ($leaf->save()) {
-                    return response(['message' => 'leave successfully approved.'], 200);
-                } else {
-                    return response(['message' => 'server error please request later.'], 500);
-                }
-            } else {
-                return response(['message' => 'leave can not be approved.'], 400);
-            }
-        } else {
+        if (!$authenticatedUser->can('approve', [$leaf, $user])) {
             return response(['message' => 'permission denied'], 403);
         }
+
+        $workflow = Leave::getWorkflow($leaf);
+        if (!$workflow->can($leaf, Leave::TRANSITION_APPROVE)) {
+            return response(['message' => 'leave can not be approved.'], 400);
+        }
+
+        Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_APPROVE);
+        if (!$leaf->save()) {
+            return response(['message' => 'server error please request later.'], 500);
+        }
+
+        return response(['message' => 'leave successfully approved.'], 200);
     }
 
     /**
@@ -109,21 +107,20 @@ class UserLeaveController extends Controller
     {
         /** @var User $authenticatedUser */
         $authenticatedUser = auth()->user();
-        if ($authenticatedUser->can('reject', [$leaf, $user])) {
-            $workflow = Leave::getWorkflow($leaf);
-
-            if ($workflow->can($leaf, Leave::TRANSITION_REJECT)) {
-                Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_REJECT);
-                if ($leaf->save()) {
-                    return response(['message' => 'leave successfully rejected.'], 200);
-                } else {
-                    return response(['message' => 'server error please request later.'], 500);
-                }
-            } else {
-                return response(['message' => 'leave can not be rejected.'], 400);
-            }
-        } else {
+        if (!$authenticatedUser->can('reject', [$leaf, $user])) {
             return response(['message' => 'permission denied'], 403);
         }
+
+        $workflow = Leave::getWorkflow($leaf);
+        if (!$workflow->can($leaf, Leave::TRANSITION_REJECT)) {
+            return response(['message' => 'leave can not be rejected.'], 400);
+        }
+
+        Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_REJECT);
+        if (!$leaf->save()) {
+            return response(['message' => 'server error please request later.'], 500);
+        }
+
+        return response(['message' => 'leave successfully rejected.'], 200);
     }
 }
