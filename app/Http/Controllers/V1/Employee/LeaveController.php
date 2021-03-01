@@ -44,11 +44,10 @@ class LeaveController extends Controller
         if (!$user->can('indexOwn', Leave::class)) {
             return response(['message' => 'permission denied'], 403);
         }
+
         $page = (int)$request->get('page') ?? 1;
 
         return LeaveResource::collection($this->leaveRepository->getUsersLeaves($user, 10, $page));
-
-
     }
 
     /**
@@ -90,7 +89,6 @@ class LeaveController extends Controller
         }
 
         return LeaveResource::make($leaf);
-
     }
 
     /**
