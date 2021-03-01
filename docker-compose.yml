@@ -43,7 +43,7 @@ services:
       MYSQL_DATABASE: snapp_hr
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
-      MYSQL_ROOT_PASSWORD: mysql13243546
+      MYSQL_ROOT_PASSWORD: ""
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     networks:

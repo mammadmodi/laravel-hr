@@ -41,55 +41,56 @@ class LeaveController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-        if ($user->can('indexOwn', Leave::class)) {
-            $page = (int)$request->get('page') ?? 1;
-
-            return LeaveResource::collection($this->leaveRepository->getUsersLeaves($user, 10, $page));
-        } else {
+        if (!$user->can('indexOwn', Leave::class)) {
             return response(['message' => 'permission denied'], 403);
         }
+        $page = (int)$request->get('page') ?? 1;
+
+        return LeaveResource::collection($this->leaveRepository->getUsersLeaves($user, 10, $page));
+
+
     }
 
     /**
      * Tries to store a leave in database.
      *
      * @param LeaveRequest $request
-     * @return LeaveResource
+     * @return LeaveResource|ResponseFactory|Response
      */
     public function store(LeaveRequest $request)
     {
         /** @var User $user */
         $user = auth()->user();
-        if ($user->can('create', Leave::class)) {
-
-            $leave = new Leave($request->all());
-            $leave->user_id = auth()->user()->id;
-
-            if ($leave->save()) {
-                return LeaveResource::make($leave);
-            } else {
-                return response('Bad request.', 400);
-            }
-        } else {
+        if (!$user->can('create', Leave::class)) {
             return response(['message' => 'permission denied'], 403);
         }
+
+        $leave = new Leave($request->all());
+        $leave->user_id = auth()->user()->id;
+
+        if (!$leave->save()) {
+            return response('Bad request.', 400);
+        }
+
+        return LeaveResource::make($leave);
     }
 
     /**
      * Shows leave of user.
      *
      * @param Leave $leaf
-     * @return LeaveResource
+     * @return LeaveResource|ResponseFactory|Response
      */
     public function show(Leave $leaf)
     {
         /** @var User $user */
         $user = auth()->user();
-        if ($user->can('viewOwn', $leaf)) {
-            return LeaveResource::make($leaf);
-        } else {
+        if (!$user->can('viewOwn', $leaf)) {
             return response(['message' => 'permission denied'], 403);
         }
+
+        return LeaveResource::make($leaf);
+
     }
 
     /**
@@ -102,21 +103,21 @@ class LeaveController extends Controller
     {
         /** @var User $user */
         $user = auth()->user();
-        if ($user->can('cancelOwn', $leaf)) {
-            $workflow = Leave::getWorkflow($leaf);
-
-            if ($workflow->can($leaf, Leave::TRANSITION_CANCEL)) {
-                Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_CANCEL);
-                if ($leaf->save()) {
-                    return response(['message' => 'leave successfully canceled.'], 200);
-                } else {
-                    return response(['message' => 'server error please request later.'], 500);
-                }
-            } else {
-                return response(['message' => 'leave can not be canceled.'], 400);
-            }
-        } else {
+        if (!$user->can('cancelOwn', $leaf)) {
             return response(['message' => 'permission denied'], 403);
         }
+
+        $workflow = Leave::getWorkflow($leaf);
+        if (!$workflow->can($leaf, Leave::TRANSITION_CANCEL)) {
+            return response(['message' => 'leave can not be canceled.'], 400);
+
+        }
+
+        Leave::getWorkflow($leaf)->apply($leaf, Leave::TRANSITION_CANCEL);
+        if (!$leaf->save()) {
+            return response(['message' => 'server error please request later.'], 500);
+        }
+
+        return response(['message' => 'leave successfully canceled.'], 200);
     }
 }
